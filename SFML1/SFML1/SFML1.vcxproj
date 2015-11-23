@@ -39,12 +39,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Igor\Documents\Visual Studio 2013\Projects\SFML1\SFML_32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Igor\Documents\Visual Studio 2013\Projects\SFML1\SFML_32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\SFML_32\include;..\;$(IncludePath)</IncludePath>
+    <LibraryPath>..\SFML_32\lib;..\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Igor\Documents\Visual Studio 2013\Projects\SFML1\SFML_32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Igor\Documents\Visual Studio 2013\Projects\SFML1\SFML_32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\SFML_32\include;..\;$(IncludePath)</IncludePath>
+    <LibraryPath>..\SFML_32\lib;..\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -73,7 +73,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

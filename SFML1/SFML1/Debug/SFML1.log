@@ -1,13 +1,18 @@
-﻿Build started 11/23/2015 00:19:26.
-     1>Project "c:\Users\Igor\documents\visual studio 2013\Projects\SFML1\SFML1\SFML1.vcxproj" on node 2 (Build target(s)).
+﻿Build started 11/23/2015 13:52:45.
+     1>Project "C:\Users\Igor\Desktop\DarkMatter\SFML1\SFML1\SFML1.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_DYNAMIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt test.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D SFML_DYNAMIC /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Entity.cpp Game.cpp test.cpp
          test.cpp
+         Game.cpp
+         Entity.cpp
+         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\igor\documents\visual studio 2013\Projects\SFML1\Debug\SFML1.exe" /INCREMENTAL /NOLOGO "sfml-audio-d.lib" "sfml-graphics-d.lib" "sfml-system-d.lib" "sfml-window-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\users\igor\documents\visual studio 2013\Projects\SFML1\Debug\SFML1.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\igor\documents\visual studio 2013\Projects\SFML1\Debug\SFML1.lib" /MACHINE:X86 Debug\test.obj
-         SFML1.vcxproj -> c:\users\igor\documents\visual studio 2013\Projects\SFML1\Debug\SFML1.exe
-     1>Done Building Project "c:\Users\Igor\documents\visual studio 2013\Projects\SFML1\SFML1\SFML1.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Igor\Desktop\DarkMatter\SFML1\Debug\SFML1.exe" /INCREMENTAL /NOLOGO "sfml-audio-d.lib" "sfml-graphics-d.lib" "sfml-system-d.lib" "sfml-window-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Igor\Desktop\DarkMatter\SFML1\Debug\SFML1.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Igor\Desktop\DarkMatter\SFML1\Debug\SFML1.lib" /MACHINE:X86 Debug\Entity.obj
+         Debug\Game.obj
+         Debug\test.obj
+         SFML1.vcxproj -> C:\Users\Igor\Desktop\DarkMatter\SFML1\Debug\SFML1.exe
+     1>Done Building Project "C:\Users\Igor\Desktop\DarkMatter\SFML1\SFML1\SFML1.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.28
+Time Elapsed 00:00:02.47
