@@ -1,5 +1,6 @@
 #include <SFML\Graphics.hpp>
 #include <Box2D\Box2D.h>
+#include <iostream>
 
 /** We need this to easily convert between pixel and real-world coordinates*/
 static const float SCALE = 30.f;
@@ -26,6 +27,8 @@ int main()
 	sf::Texture BoxTexture;
 	GroundTexture.loadFromFile("ground.png");
 	BoxTexture.loadFromFile("box.png");
+
+	std::cout << "Hello world" << std::endl;
 
 	while (Window.isOpen())
 	{
