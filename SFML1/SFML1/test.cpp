@@ -1,6 +1,12 @@
 #include <SFML\Graphics.hpp>
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
+#include "mysql\mysql_connection.h"
+#include <mysql\cppconn/driver.h>
+#include <mysql\cppconn\exception.h>
+#include <mysql\cppconn/resultset.h>
+#include <mysql\cppconn/statement.h>
+#include <mysql\cppconn/prepared_statement.h>
 #include <iostream>
 
 
@@ -36,10 +42,19 @@ void loadWidgets(tgui::Gui& gui)
 	tgui::Button::Ptr button(gui);
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
-	button->setPosition(270, 440);
+	button->setPosition(270, 400);
 	button->setText("Login");
 	button->bindCallback(tgui::Button::LeftMouseClicked);
 	button->setCallbackId(1);
+
+	// Create the new account button 
+	tgui::Button::Ptr newAccountButton(gui);
+	newAccountButton->load("../TGUI/widgets/Black.conf");
+	newAccountButton->setSize(260, 60);
+	newAccountButton->setPosition(270, 500);
+	newAccountButton->setText("New Account");
+	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
+	newAccountButton->setCallbackId(2);
 }
 
 /** We need this to easily convert between pixel and real-world coordinates*/
@@ -149,18 +164,14 @@ int main()
 						Window.display();
 					}
 				
-					return 0;
-
-
-
-
-
+					//return 0;
+					
 			}
 
-			//if (callback.id == 2)
-		//	{
+			if (callback.id == 2)
+			{
 
-//			}
+			}
 		}
 
 		window.clear();
