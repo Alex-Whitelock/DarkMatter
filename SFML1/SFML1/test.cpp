@@ -1,13 +1,13 @@
 #include <SFML\Graphics.hpp>
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
-#include "mysql\mysql_connection.h"
-#include <mysql\cppconn/driver.h>
-#include <mysql\cppconn\exception.h>
-#include <mysql\cppconn/resultset.h>
-#include <mysql\cppconn/statement.h>
-#include <mysql\cppconn/prepared_statement.h>
-#include <iostream>
+//#include "mysql\mysql_connection.h"
+//#include <mysql\cppconn/driver.h>
+//#include <mysql\cppconn\exception.h>
+//#include <mysql\cppconn/resultset.h>
+//#include <mysql\cppconn/statement.h>
+//#include <mysql\cppconn/prepared_statement.h>
+//#include <iostream>
 
 
 void loadWidgets(tgui::Gui& gui)
