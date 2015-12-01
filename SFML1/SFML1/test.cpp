@@ -133,6 +133,54 @@ void levelSelectionScreen(tgui::Gui& gui)
 	//newAccountButton->setCallbackId(2);
 }
 
+void loadWidgets01(tgui::Gui& gui)
+{
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../TGUI/examples/cell.gif");
+	picture->setSize(800, 600);
+
+	// Create the username label
+	tgui::Label::Ptr labelUsername(gui);
+	labelUsername->setText("Username:");
+	labelUsername->setPosition(200, 100);
+
+	// Create the password label
+	tgui::Label::Ptr labelPassword(gui);
+	labelPassword->setText("Password:");
+	labelPassword->setPosition(200, 250);
+
+	// Create the username edit box
+	tgui::EditBox::Ptr editBoxUsername(gui, "Username");
+	editBoxUsername->load("../TGUI/widgets/Black.conf");
+	editBoxUsername->setSize(400, 40);
+	editBoxUsername->setPosition(200, 140);
+
+	// Create the password edit box (we will copy the previously created edit box)
+	tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
+	editBoxPassword->setPosition(200, 290);
+	editBoxPassword->setPasswordCharacter('*');
+
+	// Create the login button
+	tgui::Button::Ptr button(gui);
+	button->load("../TGUI/widgets/Black.conf");
+	button->setSize(260, 60);
+	button->setPosition(270, 400);
+	button->setText("Login");
+	button->bindCallback(tgui::Button::LeftMouseClicked);
+	button->setCallbackId(1);
+
+	// Create the new account button 
+	tgui::Button::Ptr newAccountButton(gui);
+	newAccountButton->load("../TGUI/widgets/Black.conf");
+	newAccountButton->setSize(260, 60);
+	newAccountButton->setPosition(270, 500);
+	newAccountButton->setText("New Account");
+	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
+	newAccountButton->setCallbackId(2);
+}
+
+
 /** We need this to easily convert between pixel and real-world coordinates*/
 static const float SCALE = 30.f;
 
