@@ -2,15 +2,24 @@
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
 //#include "mysql\mysql_connection.h"
-//#include <mysql\cppconn/driver.h>
+//#include <mysql\cppconn\driver.h>
 //#include <mysql\cppconn\exception.h>
-//#include <mysql\cppconn/resultset.h>
-//#include <mysql\cppconn/statement.h>
-//#include <mysql\cppconn/prepared_statement.h>
-//#include <iostream>
+//#include <mysql\cppconn\resultset.h>
+//#include <mysql\cppconn\statement.h>
+//#include <mysql\cppconn\prepared_statement.h>
+#include <iostream>
+//#include "mysql_connection.h"
+//
+//#include <cppconn/driver.h>
+//#include <cppconn/exception.h>
+//#include <cppconn/resultset.h>
+//#include <cppconn/statement.h>
+//
+//
+//// Link to the Connector/C++ library
+//#pragma comment(lib, "mysqlcppconn.lib")
 
-
-void loadWidgets(tgui::Gui& gui)
+void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
@@ -57,6 +66,73 @@ void loadWidgets(tgui::Gui& gui)
 	newAccountButton->setCallbackId(2);
 }
 
+void levelSelectionScreen(tgui::Gui& gui)
+{
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+	picture->setSize(800, 600);
+
+	// Create the levelSelect label
+	tgui::Label::Ptr levelSelectLable(gui);
+	levelSelectLable->setText("Please select your level...");
+	levelSelectLable->setPosition(200, 100);
+
+	// Create level selection boxes 
+	sf::Texture texture;
+	texture.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
+	tgui::Panel::Ptr panel(gui);
+	panel->setSize(200, 140);
+	panel->setPosition(200, 150);
+	panel->setBackgroundTexture(&texture);
+	panel->bindCallback(tgui::Button::LeftMouseClicked);
+	panel->setCallbackId(3);
+	
+	
+	
+	//tgui::Button::Ptr level1(gui);
+	//level1->("../TGUI/examples/ThinkLinux.jpg");
+	//level1->setPosition(200, 250);
+	//tgui::ChildWindow::Ptr level1(gui);
+	//level1->load("../TGUI/examples/ThinkLinux.jpg");
+	//level1->setIcon("../TGUI/examples/ThinkLinux.jpg");
+	//level1->setSize(200, 200);
+	//level1->setPosition(200, 250);
+	//// Create the password label
+	//tgui::Label::Ptr labelPassword(gui);
+	//labelPassword->setText("Password:");
+	//labelPassword->setPosition(200, 250);
+
+	//// Create the username edit box
+	//tgui::EditBox::Ptr editBoxUsername(gui, "Username");
+	//editBoxUsername->load("../TGUI/widgets/Black.conf");
+	//editBoxUsername->setSize(400, 40);
+	//editBoxUsername->setPosition(200, 140);
+
+	//// Create the password edit box (we will copy the previously created edit box)
+	//tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
+	//editBoxPassword->setPosition(200, 290);
+	//editBoxPassword->setPasswordCharacter('*');
+
+	//// Create the login button
+	//tgui::Button::Ptr button(gui);
+	//button->load("../TGUI/widgets/Black.conf");
+	//button->setSize(260, 60);
+	//button->setPosition(270, 400);
+	//button->setText("Login");
+	//button->bindCallback(tgui::Button::LeftMouseClicked);
+	//button->setCallbackId(1);
+
+	//// Create the new account button 
+	//tgui::Button::Ptr newAccountButton(gui);
+	//newAccountButton->load("../TGUI/widgets/Black.conf");
+	//newAccountButton->setSize(260, 60);
+	//newAccountButton->setPosition(270, 500);
+	//newAccountButton->setText("New Account");
+	//newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
+	//newAccountButton->setCallbackId(2);
+}
+
 /** We need this to easily convert between pixel and real-world coordinates*/
 static const float SCALE = 30.f;
 
@@ -76,7 +152,7 @@ int main()
 	gui.setGlobalFont("../TGUI/fonts/DejaVuSans.ttf");
 
 	// Load the widgets
-	loadWidgets(gui);
+	loginScreen(gui);
 
 	// Main loop
 	while (window.isOpen())
@@ -108,69 +184,71 @@ int main()
 				// Continue here by checking if the username and password are correct ...
 				std::cout << "Made it here" << std::endl;
 
-				
+				levelSelectionScreen(gui);
 
-					/** Prepare the window */
-					sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Test");
-					Window.setFramerateLimit(60);
-				
-					/** Prepare the world */
-					b2Vec2 Gravity(0.f, 9.8f);
-					b2World World(Gravity);
-					CreateGround(World, 400.f, 500.f);
-				
-					/** Prepare textures */
-					sf::Texture GroundTexture;
-					sf::Texture BoxTexture;
-					GroundTexture.loadFromFile("ground.png");
-					BoxTexture.loadFromFile("box.png");
-				
-					std::cout << "Hello world" << std::endl;
-				
-					while (Window.isOpen())
-					{
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-						{
-							int MouseX = sf::Mouse::getPosition(Window).x;
-							int MouseY = sf::Mouse::getPosition(Window).y;
-							CreateBox(World, MouseX, MouseY);
-						}
-						World.Step(1 / 60.f, 8, 3);
-				
-						Window.clear(sf::Color::White);
-						int BodyCount = 0;
-						for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
-						{
-							if (BodyIterator->GetType() == b2_dynamicBody)
-							{
-								sf::Sprite Sprite;
-								Sprite.setTexture(BoxTexture);
-								Sprite.setOrigin(16.f, 16.f);
-								Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
-								Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
-								Window.draw(Sprite);
-								++BodyCount;
-							}
-							else
-							{
-								sf::Sprite GroundSprite;
-								GroundSprite.setTexture(GroundTexture);
-								GroundSprite.setOrigin(400.f, 8.f);
-								GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
-								GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
-								Window.draw(GroundSprite);
-							}
-						}
-						Window.display();
-					}
-				
-					//return 0;
-					
+				///** Prepare the window */
+				//sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Test");
+				//Window.setFramerateLimit(60);
+				//
+				///** Prepare the world */
+				//b2Vec2 Gravity(0.f, 9.8f);
+				//b2World World(Gravity);
+				//CreateGround(World, 400.f, 500.f);
+				//
+				///** Prepare textures */
+				//sf::Texture GroundTexture;
+				//sf::Texture BoxTexture;
+				//GroundTexture.loadFromFile("ground.png");
+				//BoxTexture.loadFromFile("box.png");
+				//
+				//std::cout << "Hello world" << std::endl;
+				//
+				//while (Window.isOpen())
+				//{
+				//	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				//	{
+				//		int MouseX = sf::Mouse::getPosition(Window).x;
+				//		int MouseY = sf::Mouse::getPosition(Window).y;
+				//		CreateBox(World, MouseX, MouseY);
+				//	}
+				//	World.Step(1 / 60.f, 8, 3);
+				//
+				//	Window.clear(sf::Color::White);
+				//	int BodyCount = 0;
+				//	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
+				//	{
+				//		if (BodyIterator->GetType() == b2_dynamicBody)
+				//		{
+				//			sf::Sprite Sprite;
+				//			Sprite.setTexture(BoxTexture);
+				//			Sprite.setOrigin(16.f, 16.f);
+				//			Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
+				//			Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
+				//			Window.draw(Sprite);
+				//			++BodyCount;
+				//		}
+				//		else
+				//		{
+				//			sf::Sprite GroundSprite;
+				//			GroundSprite.setTexture(GroundTexture);
+				//			GroundSprite.setOrigin(400.f, 8.f);
+				//			GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
+				//			GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+				//			Window.draw(GroundSprite);
+				//		}
+				//	}
+				//	Window.display();
+				//}					
 			}
 
-			if (callback.id == 2)
-			{
+			//if (callback.id == 2)
+			//{
 
+			//}
+
+			if (callback.id == 3)
+			{
+				std::cout << "This is a test" << std::endl;
 			}
 		}
 
