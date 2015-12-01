@@ -64,6 +64,7 @@ void loginScreen(tgui::Gui& gui)
 	newAccountButton->setText("New Account");
 	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
 	newAccountButton->setCallbackId(2);
+
 }
 
 void levelSelectionScreen(tgui::Gui& gui)
@@ -79,12 +80,14 @@ void levelSelectionScreen(tgui::Gui& gui)
 	levelSelectLable->setPosition(200, 100);
 
 	// Create level selection boxes 
-	sf::Texture texture;
-	texture.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
+	sf::Texture texture3;
+	texture3.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
+
 	tgui::Panel::Ptr panel(gui);
 	panel->setSize(200, 140);
 	panel->setPosition(200, 150);
-	panel->setBackgroundTexture(&texture);
+	//panel->setBackgroundTexture(&texture3);
+	panel->setBackgroundColor(sf::Color::Green);
 	panel->bindCallback(tgui::Button::LeftMouseClicked);
 	panel->setCallbackId(3);
 	
