@@ -23,7 +23,8 @@ void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-    picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+   // picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+	picture->load("../images/satan.jpg");
 	picture->setSize(800, 600);
 
 	// Create the username label
@@ -67,7 +68,7 @@ void loginScreen(tgui::Gui& gui)
 
 }
 
-void levelSelectionScreen(tgui::Gui& gui)
+void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
@@ -79,19 +80,108 @@ void levelSelectionScreen(tgui::Gui& gui)
 	levelSelectLable->setText("Please select your level...");
 	levelSelectLable->setPosition(200, 100);
 
-	// Create level selection boxes 
-	//sf::Texture texture;
-	//texture.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
-	//texture.loadFromFile("../ThinkLinux.jpg");
+	tgui::SpriteSheet::Ptr spritesheet1(gui);
+	tgui::SpriteSheet::Ptr spritesheet2(gui);
+	tgui::SpriteSheet::Ptr spritesheet3(gui);
 
-	tgui::SpriteSheet::Ptr spritesheet(gui);
-	spritesheet->load("../TGUI/examples/ThinkLinux.jpg");
-	//spritesheet->setCells(4, 4);
-	//spritesheet->setVisibleCell(2, 3);
-	spritesheet->setSize(200, 140);
-	spritesheet->setPosition(200, 150);
-	spritesheet->bindCallback(tgui::Button::LeftMouseClicked);
-	spritesheet->setCallbackId(3);
+	switch (levelNum)
+	{
+	case 1:
+		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->setSize(200, 140);
+		spritesheet1->setPosition(25, 200);
+		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet1->setCallbackId(3);
+
+		spritesheet2->load("../images/satan.jpg");
+		spritesheet2->setSize(200, 140);
+		spritesheet2->setPosition(300, 200);
+		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet2->setCallbackId(666);
+
+		spritesheet3->load("../images/satan.jpg");
+		spritesheet3->setSize(200, 140);
+		spritesheet3->setPosition(575, 200);
+		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet3->setCallbackId(666);
+		break;
+
+	case 2:
+		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->setSize(200, 140);
+		spritesheet1->setPosition(25, 200);
+		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet1->setCallbackId(3);
+
+		spritesheet2->load("../TGUI/examples/Linux.jpg");
+		spritesheet2->setSize(200, 140);
+		spritesheet2->setPosition(300, 200);
+		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet2->setCallbackId(4);
+
+		spritesheet3->load("../images/satan.jpg");
+		spritesheet3->setSize(200, 140);
+		spritesheet3->setPosition(575, 200);
+		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet3->setCallbackId(666);
+		break;
+	case 3:
+		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->setSize(200, 140);
+		spritesheet1->setPosition(25, 200);
+		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet1->setCallbackId(3);
+
+		spritesheet2->load("../TGUI/examples/Linux.jpg");
+		spritesheet2->setSize(200, 140);
+		spritesheet2->setPosition(300, 200);
+		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet2->setCallbackId(4);
+
+		spritesheet3->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+		spritesheet3->setSize(200, 140);
+		spritesheet3->setPosition(575, 200);
+		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet3->setCallbackId(5);
+		break;
+	default:
+		break;
+	}
+
+	/*tgui::SpriteSheet::Ptr spritesheet1(gui);
+	spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+	spritesheet1->setSize(200, 140);
+	spritesheet1->setPosition(25, 200);
+	spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
+	spritesheet1->setCallbackId(3);
+
+	tgui::SpriteSheet::Ptr spritesheet2(gui);
+	spritesheet2->load("../TGUI/examples/Linux.jpg");
+	spritesheet2->setSize(200, 140);
+	spritesheet2->setPosition(300, 200);
+	spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
+	spritesheet2->setCallbackId(4);
+
+	tgui::SpriteSheet::Ptr spritesheet3(gui);
+	spritesheet3->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+	spritesheet3->setSize(200, 140);
+	spritesheet3->setPosition(575, 200);
+	spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
+	spritesheet3->setCallbackId(5);
+	*/
+
+	// Create Level Lables
+	tgui::Label::Ptr level1Lable(gui);
+	level1Lable->setText("Level 1");
+	level1Lable->setPosition(65, 390);
+
+	tgui::Label::Ptr level2lable(gui);
+	level2lable->setText("Level 2");
+	level2lable->setPosition(340, 390);
+
+	tgui::Label::Ptr level3lable(gui);
+	level3lable->setText("Level 3");
+	level3lable->setPosition(615, 390);
 
 	//sf::Drawable canvas(gui);
 
@@ -202,13 +292,13 @@ void loadWidgets01(tgui::Gui& gui)
 
 
 /** We need this to easily convert between pixel and real-world coordinates*/
-static const float SCALE = 30.f;
+//static const float SCALE = 30.f;
 
 /** Create the base for the boxes to land */
-void CreateGround(b2World& World, float X, float Y);
+//void CreateGround(b2World& World, float X, float Y);
 
 /** Create the boxes */
-void CreateBox(b2World& World, int MouseX, int MouseY);
+//void CreateBox(b2World& World, int MouseX, int MouseY);
 
 int main()
 {
@@ -252,7 +342,10 @@ int main()
 				// Continue here by checking if the username and password are correct ...
 				std::cout << "Made it here" << std::endl;
 
-				levelSelectionScreen(gui);
+				// This levelNum int will come from the database 
+				int level = 1;
+
+				levelSelectionScreen(gui, level);
 
 				///** Prepare the window */
 				//sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Test");
@@ -309,14 +402,24 @@ int main()
 				//}					
 			}
 
-			//if (callback.id == 2)
-			//{
-
-			//}
+			if (callback.id == 2)
+			{
+				std::cout << "Creating account..." << std::endl;
+			}
 
 			if (callback.id == 3)
 			{
-				std::cout << "This is a test" << std::endl;
+				std::cout << "Loading Level 1" << std::endl;
+			}
+
+			if (callback.id == 4)
+			{
+				std::cout << "Loading Level 2" << std::endl;
+			}
+
+			if (callback.id == 5)
+			{
+				std::cout << "Loading Level 3" << std::endl;
 			}
 		}
 
@@ -400,33 +503,33 @@ int main()
 //	return 0;
 //}
 //
-void CreateBox(b2World& World, int MouseX, int MouseY)
-{
-	b2BodyDef BodyDef;
-	BodyDef.position = b2Vec2(MouseX / SCALE, MouseY / SCALE);
-	BodyDef.type = b2_dynamicBody;
-	b2Body* Body = World.CreateBody(&BodyDef);
-
-	b2PolygonShape Shape;
-	Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
-	b2FixtureDef FixtureDef;
-	FixtureDef.density = 1.f;
-	FixtureDef.friction = 0.7f;
-	FixtureDef.shape = &Shape;
-	Body->CreateFixture(&FixtureDef);
-}
-
-void CreateGround(b2World& World, float X, float Y)
-{
-	b2BodyDef BodyDef;
-	BodyDef.position = b2Vec2(X / SCALE, Y / SCALE);
-	BodyDef.type = b2_staticBody;
-	b2Body* Body = World.CreateBody(&BodyDef);
-
-	b2PolygonShape Shape;
-	Shape.SetAsBox((800.f / 2) / SCALE, (16.f / 2) / SCALE);
-	b2FixtureDef FixtureDef;
-	FixtureDef.density = 0.f;
-	FixtureDef.shape = &Shape;
-	Body->CreateFixture(&FixtureDef);
-}
+//void CreateBox(b2World& World, int MouseX, int MouseY)
+//{
+//	b2BodyDef BodyDef;
+//	BodyDef.position = b2Vec2(MouseX / SCALE, MouseY / SCALE);
+//	BodyDef.type = b2_dynamicBody;
+//	b2Body* Body = World.CreateBody(&BodyDef);
+//
+//	b2PolygonShape Shape;
+//	Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
+//	b2FixtureDef FixtureDef;
+//	FixtureDef.density = 1.f;
+//	FixtureDef.friction = 0.7f;
+//	FixtureDef.shape = &Shape;
+//	Body->CreateFixture(&FixtureDef);
+//}
+//
+//void CreateGround(b2World& World, float X, float Y)
+//{
+//	b2BodyDef BodyDef;
+//	BodyDef.position = b2Vec2(X / SCALE, Y / SCALE);
+//	BodyDef.type = b2_staticBody;
+//	b2Body* Body = World.CreateBody(&BodyDef);
+//
+//	b2PolygonShape Shape;
+//	Shape.SetAsBox((800.f / 2) / SCALE, (16.f / 2) / SCALE);
+//	b2FixtureDef FixtureDef;
+//	FixtureDef.density = 0.f;
+//	FixtureDef.shape = &Shape;
+//	Body->CreateFixture(&FixtureDef);
+//}
