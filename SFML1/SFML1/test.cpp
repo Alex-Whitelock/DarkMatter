@@ -80,17 +80,34 @@ void levelSelectionScreen(tgui::Gui& gui)
 	levelSelectLable->setPosition(200, 100);
 
 	// Create level selection boxes 
-	sf::Texture texture3;
-	texture3.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
+	//sf::Texture texture;
+	//texture.loadFromFile("../TGUI/examples/ThinkLinux.jpg");
+	//texture.loadFromFile("../ThinkLinux.jpg");
 
-	tgui::Panel::Ptr panel(gui);
-	panel->setSize(200, 140);
-	panel->setPosition(200, 150);
-	//panel->setBackgroundTexture(&texture3);
-	panel->setBackgroundColor(sf::Color::Green);
-	panel->bindCallback(tgui::Button::LeftMouseClicked);
-	panel->setCallbackId(3);
-	
+	tgui::SpriteSheet::Ptr spritesheet(gui);
+	spritesheet->load("../TGUI/examples/ThinkLinux.jpg");
+	//spritesheet->setCells(4, 4);
+	//spritesheet->setVisibleCell(2, 3);
+	spritesheet->setSize(200, 140);
+	spritesheet->setPosition(200, 150);
+	spritesheet->bindCallback(tgui::Button::LeftMouseClicked);
+	spritesheet->setCallbackId(3);
+
+	//sf::Drawable canvas(gui);
+
+	/*tgui::Canvas::Ptr canvas(gui);
+	canvas->setSize(200, 140);
+	canvas->setPosition(200, 150);
+	canvas->*/
+
+	//tgui::Panel::Ptr panel(gui, "Level 1");
+	//panel->setSize(200, 140);
+	//panel->setPosition(200, 150);
+	//panel->setBackgroundTexture(&texture);
+	////panel->setBackgroundColor(sf::Color::Green);
+	//panel->bindCallback(tgui::Button::LeftMouseClicked);
+	//panel->setCallbackId(3);
+	//
 	
 	
 	//tgui::Button::Ptr level1(gui);
