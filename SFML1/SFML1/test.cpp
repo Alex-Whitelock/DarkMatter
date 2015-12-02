@@ -1,23 +1,7 @@
 #include <SFML\Graphics.hpp>
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
-//#include "mysql\mysql_connection.h"
-//#include <mysql\cppconn\driver.h>
-//#include <mysql\cppconn\exception.h>
-//#include <mysql\cppconn\resultset.h>
-//#include <mysql\cppconn\statement.h>
-//#include <mysql\cppconn\prepared_statement.h>
 #include <iostream>
-//#include "mysql_connection.h"
-//
-//#include <cppconn/driver.h>
-//#include <cppconn/exception.h>
-//#include <cppconn/resultset.h>
-//#include <cppconn/statement.h>
-//
-//
-//// Link to the Connector/C++ library
-//#pragma comment(lib, "mysqlcppconn.lib")
 
 
 void loginScreen(tgui::Gui& gui)
@@ -277,7 +261,7 @@ void level3(tgui::Gui& gui)
 	picture->setSize(800, 600);
 
 	// Create the done button
-	tgui::Button::Ptr doneButton(gui);
+	tgui::Button::Ptr doneButton(gui, "level3Done");
 	doneButton->load("../TGUI/widgets/Black.conf");
 	doneButton->setSize(260, 60);
 	doneButton->setPosition(270, 500);
@@ -450,9 +434,34 @@ void level3check(tgui::Gui& gui)
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
-		std::cout << "Level 3 completed" << std::endl;
+		gui.remove(gui.get("level3Done"));
+		
+		// Create the done button
+		tgui::Button::Ptr nextButton(gui);
+		nextButton->load("../TGUI/widgets/Black.conf");
+		nextButton->setSize(260, 60);
+		nextButton->setPosition(270, 500);
+		nextButton->setText("Next");
+		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
+		nextButton->setCallbackId(32);
+
+		//tgui::Button::Ptr doneButton = gui.get("level3Done");
+		//doneButton->setText("Next");
+		//levelSelectionScreen(gui, 3);
+		//doneButton->
+		//doneButton->bindCallback(tgui::Button::LeftMouseClicked);
+		//doneButton->setCallbackId(1);
+		//levelComplete(3);
 	}
 }
+
+//void levelComplete(int levelNumber)
+//{
+
+	// MySQL calls to update user progress 
+
+	// Level Complete Animation 
+//}
 
 /** We need this to easily convert between pixel and real-world coordinates*/
 //static const float SCALE = 30.f;
@@ -603,6 +612,11 @@ int main()
 			if (callback.id == 31)
 			{
 				level3check(gui);
+			}
+
+			if (callback.id == 32)
+			{
+				levelSelectionScreen(gui, 3);
 			}
 		}
 
