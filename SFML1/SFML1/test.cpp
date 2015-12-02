@@ -295,7 +295,7 @@ void level3(tgui::Gui& gui)
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
 	picture->load("../images/cell.gif");
-	picture->setSize(700, 500);
+	picture->setSize(800, 600);
 
 	// Create the done button
 	tgui::Button::Ptr doneButton(gui);
@@ -306,13 +306,66 @@ void level3(tgui::Gui& gui)
 	doneButton->bindCallback(tgui::Button::LeftMouseClicked);
 	doneButton->setCallbackId(32);
 
-	tgui::Tab::Ptr tab(gui);
-	tab->load("../TGUI/widgets/Black.conf");
-	tab->setPosition(40, 300);
-	tab->setSize(20, 40);
-	tab->add("nucleus");
-	tab->add("mitochondria");
-	tab->add("ribosome");
+	tgui::Tab::Ptr nucleusTab(gui);
+	nucleusTab->load("../TGUI/widgets/Black.conf");
+	nucleusTab->setPosition(5, 240);
+	nucleusTab->setTabHeight(20);
+	//tab->setMaximumTabWidth(100);
+	//tab->setSize(20, 40);
+	nucleusTab->add("nucleus");
+	nucleusTab->add("mitochondria");
+	nucleusTab->add("ribosome");
+
+	tgui::Tab::Ptr erTab(gui);
+	erTab->load("../TGUI/widgets/Black.conf");
+	erTab->setPosition(5, 175);
+	erTab->setTabHeight(20);
+	//tab->setMaximumTabWidth(100);
+	//tab->setSize(20, 40);
+	erTab->add("golgi");
+	erTab->add("lysosome");
+	erTab->add("endoplasmic reticulum");
+
+	tgui::Tab::Ptr cmTab(gui);
+	cmTab->load("../TGUI/widgets/Black.conf");
+	cmTab->setPosition(5, 110);
+	cmTab->setTabHeight(20);
+	cmTab->add("lysosome");
+	cmTab->add("cell membrane");
+	cmTab->add("mitochondria");
+
+	tgui::Tab::Ptr ribosomeTab(gui);
+	ribosomeTab->load("../TGUI/widgets/Black.conf");
+	ribosomeTab->setPosition(5, 420);
+	ribosomeTab->setTabHeight(20);
+	ribosomeTab->add("ribsome");
+	ribosomeTab->add("endoplasmic reticulum");
+	ribosomeTab->add("lysosome");
+
+	tgui::Tab::Ptr golgiTab(gui);
+	golgiTab->load("../TGUI/widgets/Black.conf");
+	golgiTab->setPosition(530, 350);
+	golgiTab->setTabHeight(20);
+	golgiTab->add("nucleus");
+	golgiTab->add("cell membrane");
+	golgiTab->add("golgi");
+
+	tgui::Tab::Ptr mitochondriaTab(gui);
+	mitochondriaTab->load("../TGUI/widgets/Black.conf");
+	mitochondriaTab->setPosition(500, 390);
+	mitochondriaTab->setTabHeight(20);
+	mitochondriaTab->add("mitochondria");
+	mitochondriaTab->add("ribosome");
+	mitochondriaTab->add("nucleus");
+
+	tgui::Tab::Ptr lysosomeTab(gui);
+	lysosomeTab->load("../TGUI/widgets/Black.conf");
+	lysosomeTab->setPosition(470, 420);
+	lysosomeTab->setTabHeight(20);
+	lysosomeTab->add("golgi");
+	lysosomeTab->add("lysosome");
+	lysosomeTab->add("endoplasmic reticulum");
+
 
 }
 
