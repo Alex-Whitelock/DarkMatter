@@ -244,6 +244,31 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	//newAccountButton->setCallbackId(2);
 }
 
+void level2(tgui::Gui& gui){
+
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../images/skeleton.jpg");
+	picture->setSize(800, 600);
+
+	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
+	comboBox1->load("../TGUI/widgets/Black.conf");
+	comboBox1->setSize(120, 21);
+	comboBox1->setPosition(203, 340);
+	comboBox1->addItem("Skull");
+	comboBox1->addItem("Femur");
+	comboBox1->addItem("Pelvis");
+
+	tgui::Button::Ptr button(gui);
+	button->load("../TGUI/widgets/Black.conf");
+	button->setSize(260, 60);
+	button->setPosition(55, 520);
+	button->setText("Done");
+	button->bindCallback(tgui::Button::LeftMouseClicked);
+	button->setCallbackId(22);
+
+}
+
 void level3(tgui::Gui& gui)
 {
 	// Create the background image
@@ -494,6 +519,18 @@ int main()
 			if (callback.id == 4)
 			{
 				std::cout << "Loading Level 2" << std::endl;
+				window.clear();
+				gui.removeAllWidgets();
+				level2(gui);
+			}
+
+			if (callback.id == 22)
+			{
+				// Load the bone level
+				tgui::ComboBox::Ptr temp = gui.get("Femur");
+				std::string test = temp->getSelectedItem();
+				std::cout << test << std::endl;
+				std::cout << temp->getSelectedItemIndex() << std::endl;
 			}
 
 			if (callback.id == 5)
