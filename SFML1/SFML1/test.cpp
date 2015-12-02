@@ -19,6 +19,7 @@
 //// Link to the Connector/C++ library
 //#pragma comment(lib, "mysqlcppconn.lib")
 
+
 void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
@@ -243,53 +244,6 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	//newAccountButton->setCallbackId(2);
 }
 
-void loadWidgets01(tgui::Gui& gui)
-{
-	// Create the background image
-	tgui::Picture::Ptr picture(gui);
-	picture->load("../TGUI/examples/cell.gif");
-	picture->setSize(800, 600);
-
-	// Create the username label
-	tgui::Label::Ptr labelUsername(gui);
-	labelUsername->setText("Username:");
-	labelUsername->setPosition(200, 100);
-
-	// Create the password label
-	tgui::Label::Ptr labelPassword(gui);
-	labelPassword->setText("Password:");
-	labelPassword->setPosition(200, 250);
-
-	// Create the username edit box
-	tgui::EditBox::Ptr editBoxUsername(gui, "Username");
-	editBoxUsername->load("../TGUI/widgets/Black.conf");
-	editBoxUsername->setSize(400, 40);
-	editBoxUsername->setPosition(200, 140);
-
-	// Create the password edit box (we will copy the previously created edit box)
-	tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
-	editBoxPassword->setPosition(200, 290);
-	editBoxPassword->setPasswordCharacter('*');
-
-	// Create the login button
-	tgui::Button::Ptr button(gui);
-	button->load("../TGUI/widgets/Black.conf");
-	button->setSize(260, 60);
-	button->setPosition(270, 400);
-	button->setText("Login");
-	button->bindCallback(tgui::Button::LeftMouseClicked);
-	button->setCallbackId(1);
-
-	// Create the new account button 
-	tgui::Button::Ptr newAccountButton(gui);
-	newAccountButton->load("../TGUI/widgets/Black.conf");
-	newAccountButton->setSize(260, 60);
-	newAccountButton->setPosition(270, 500);
-	newAccountButton->setText("New Account");
-	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
-	newAccountButton->setCallbackId(2);
-}
-
 void level3(tgui::Gui& gui)
 {
 	// Create the background image
@@ -304,29 +258,25 @@ void level3(tgui::Gui& gui)
 	doneButton->setPosition(270, 500);
 	doneButton->setText("Done");
 	doneButton->bindCallback(tgui::Button::LeftMouseClicked);
-	doneButton->setCallbackId(32);
+	doneButton->setCallbackId(31);
 
-	tgui::Tab::Ptr nucleusTab(gui);
+	tgui::Tab::Ptr nucleusTab(gui, "nucleus");
 	nucleusTab->load("../TGUI/widgets/Black.conf");
 	nucleusTab->setPosition(5, 240);
 	nucleusTab->setTabHeight(20);
-	//tab->setMaximumTabWidth(100);
-	//tab->setSize(20, 40);
 	nucleusTab->add("nucleus");
 	nucleusTab->add("mitochondria");
 	nucleusTab->add("ribosome");
 
-	tgui::Tab::Ptr erTab(gui);
+	tgui::Tab::Ptr erTab(gui, "er");
 	erTab->load("../TGUI/widgets/Black.conf");
 	erTab->setPosition(5, 175);
 	erTab->setTabHeight(20);
-	//tab->setMaximumTabWidth(100);
-	//tab->setSize(20, 40);
 	erTab->add("golgi");
 	erTab->add("lysosome");
 	erTab->add("endoplasmic reticulum");
 
-	tgui::Tab::Ptr cmTab(gui);
+	tgui::Tab::Ptr cmTab(gui, "cm");
 	cmTab->load("../TGUI/widgets/Black.conf");
 	cmTab->setPosition(5, 110);
 	cmTab->setTabHeight(20);
@@ -334,7 +284,7 @@ void level3(tgui::Gui& gui)
 	cmTab->add("cell membrane");
 	cmTab->add("mitochondria");
 
-	tgui::Tab::Ptr ribosomeTab(gui);
+	tgui::Tab::Ptr ribosomeTab(gui, "ribosome");
 	ribosomeTab->load("../TGUI/widgets/Black.conf");
 	ribosomeTab->setPosition(5, 420);
 	ribosomeTab->setTabHeight(20);
@@ -342,7 +292,7 @@ void level3(tgui::Gui& gui)
 	ribosomeTab->add("endoplasmic reticulum");
 	ribosomeTab->add("lysosome");
 
-	tgui::Tab::Ptr golgiTab(gui);
+	tgui::Tab::Ptr golgiTab(gui, "golgi");
 	golgiTab->load("../TGUI/widgets/Black.conf");
 	golgiTab->setPosition(530, 350);
 	golgiTab->setTabHeight(20);
@@ -350,7 +300,7 @@ void level3(tgui::Gui& gui)
 	golgiTab->add("cell membrane");
 	golgiTab->add("golgi");
 
-	tgui::Tab::Ptr mitochondriaTab(gui);
+	tgui::Tab::Ptr mitochondriaTab(gui, "mitochondria");
 	mitochondriaTab->load("../TGUI/widgets/Black.conf");
 	mitochondriaTab->setPosition(500, 390);
 	mitochondriaTab->setTabHeight(20);
@@ -358,15 +308,28 @@ void level3(tgui::Gui& gui)
 	mitochondriaTab->add("ribosome");
 	mitochondriaTab->add("nucleus");
 
-	tgui::Tab::Ptr lysosomeTab(gui);
+
+	tgui::Tab::Ptr lysosomeTab(gui, "lysosome");
 	lysosomeTab->load("../TGUI/widgets/Black.conf");
 	lysosomeTab->setPosition(470, 420);
 	lysosomeTab->setTabHeight(20);
 	lysosomeTab->add("golgi");
 	lysosomeTab->add("lysosome");
 	lysosomeTab->add("endoplasmic reticulum");
+}
 
+void level3check(tgui::Gui& gui)
+{
+	tgui::Tab::Ptr temp = gui.get("nucleus");
+	int test = temp->getSelectedIndex();
+	std::cout << test << std::endl;
 
+	//std::cout << "Level 3 Done Button" << std::endl;
+	
+	//if (lysosomeTab->getSelectedIndex() == 1)
+		//lysosomeTab->setTextColor(sf::Color::Green);
+	//else
+		//lysosomeTab->setTextColor(sf::Color::Red);
 }
 
 /** We need this to easily convert between pixel and real-world coordinates*/
@@ -501,6 +464,11 @@ int main()
 				window.clear();
 				gui.removeAllWidgets();
 				level3(gui);
+			}
+
+			if (callback.id == 31)
+			{
+				level3check(gui);
 			}
 		}
 
