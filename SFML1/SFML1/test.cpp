@@ -322,8 +322,49 @@ void level3check(tgui::Gui& gui)
 {
 	tgui::Tab::Ptr temp = gui.get("nucleus");
 	int test = temp->getSelectedIndex();
-	
 	if (test == 0)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("er");
+	test = temp->getSelectedIndex();
+	if (test == 2)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("cm");
+	test = temp->getSelectedIndex();
+	if (test == 1)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("ribosome");
+	test = temp->getSelectedIndex();
+	if (test == 0)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("golgi");
+	test = temp->getSelectedIndex();
+	if (test == 2)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("mitochondria");
+	test = temp->getSelectedIndex();
+	if (test == 0)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("lysosome");
+	test = temp->getSelectedIndex();
+	if (test == 1)
 		temp->setTextColor(sf::Color::Green);
 	else
 		temp->setTextColor(sf::Color::Red);
