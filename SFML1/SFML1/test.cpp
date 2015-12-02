@@ -341,58 +341,117 @@ void level3(tgui::Gui& gui)
 	lysosomeTab->add("golgi");
 	lysosomeTab->add("lysosome");
 	lysosomeTab->add("endoplasmic reticulum");
+
+	// Create the progressBar label
+	tgui::Label::Ptr progressBarLabel(gui);
+	progressBarLabel->setText("Progress");
+	progressBarLabel->setTextColor(sf::Color::Black);
+	progressBarLabel->setPosition(580, 10);
+
+	tgui::LoadingBar::Ptr progressBar(gui, "cellProgress");
+	progressBar->load("../TGUI/widgets/Black.conf");
+	progressBar->setPosition(530, 50);
+	progressBar->setSize(250, 30);
+	progressBar->setValue(0);
 }
 
 void level3check(tgui::Gui& gui)
 {
+	tgui::LoadingBar::Ptr progress = gui.get("cellProgress");
+	progress->setValue(0);
+
 	tgui::Tab::Ptr temp = gui.get("nucleus");
 	int test = temp->getSelectedIndex();
 	if (test == 0)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("er");
 	test = temp->getSelectedIndex();
 	if (test == 2)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("cm");
 	test = temp->getSelectedIndex();
 	if (test == 1)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("ribosome");
 	test = temp->getSelectedIndex();
 	if (test == 0)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("golgi");
 	test = temp->getSelectedIndex();
 	if (test == 2)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("mitochondria");
 	test = temp->getSelectedIndex();
 	if (test == 0)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
 
 	temp = gui.get("lysosome");
 	test = temp->getSelectedIndex();
 	if (test == 1)
+	{
 		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
 	else
 		temp->setTextColor(sf::Color::Red);
+
+	std::cout << "Level 3 Progress Is: " << progress->getValue() << std::endl;
+
+	if (progress->getValue() == 98)
+	{
+		progress->setValue(100);
+		std::cout << "Level 3 completed" << std::endl;
+	}
 }
 
 /** We need this to easily convert between pixel and real-world coordinates*/
