@@ -113,7 +113,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../TGUI/examples/Linux.jpg");
+		spritesheet2->load("../images/skeleton.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 200);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
@@ -132,13 +132,13 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../TGUI/examples/Linux.jpg");
+		spritesheet2->load("../images/skeleton.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 200);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
-		spritesheet3->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+		spritesheet3->load("../images/cell.gif");
 		spritesheet3->setSize(200, 140);
 		spritesheet3->setPosition(575, 200);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
@@ -290,6 +290,31 @@ void loadWidgets01(tgui::Gui& gui)
 	newAccountButton->setCallbackId(2);
 }
 
+void level3(tgui::Gui& gui)
+{
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../images/cell.gif");
+	picture->setSize(700, 500);
+
+	// Create the done button
+	tgui::Button::Ptr doneButton(gui);
+	doneButton->load("../TGUI/widgets/Black.conf");
+	doneButton->setSize(260, 60);
+	doneButton->setPosition(270, 500);
+	doneButton->setText("Done");
+	doneButton->bindCallback(tgui::Button::LeftMouseClicked);
+	doneButton->setCallbackId(32);
+
+	tgui::Tab::Ptr tab(gui);
+	tab->load("../TGUI/widgets/Black.conf");
+	tab->setPosition(40, 300);
+	tab->setSize(20, 40);
+	tab->add("nucleus");
+	tab->add("mitochondria");
+	tab->add("ribosome");
+
+}
 
 /** We need this to easily convert between pixel and real-world coordinates*/
 //static const float SCALE = 30.f;
@@ -343,7 +368,7 @@ int main()
 				std::cout << "Made it here" << std::endl;
 
 				// This levelNum int will come from the database 
-				int level = 1;
+				int level = 3;
 
 				levelSelectionScreen(gui, level);
 
@@ -420,6 +445,9 @@ int main()
 			if (callback.id == 5)
 			{
 				std::cout << "Loading Level 3" << std::endl;
+				window.clear();
+				gui.removeAllWidgets();
+				level3(gui);
 			}
 		}
 
