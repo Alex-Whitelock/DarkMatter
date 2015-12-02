@@ -322,14 +322,11 @@ void level3check(tgui::Gui& gui)
 {
 	tgui::Tab::Ptr temp = gui.get("nucleus");
 	int test = temp->getSelectedIndex();
-	std::cout << test << std::endl;
-
-	//std::cout << "Level 3 Done Button" << std::endl;
 	
-	//if (lysosomeTab->getSelectedIndex() == 1)
-		//lysosomeTab->setTextColor(sf::Color::Green);
-	//else
-		//lysosomeTab->setTextColor(sf::Color::Red);
+	if (test == 0)
+		temp->setTextColor(sf::Color::Green);
+	else
+		temp->setTextColor(sf::Color::Red);
 }
 
 /** We need this to easily convert between pixel and real-world coordinates*/

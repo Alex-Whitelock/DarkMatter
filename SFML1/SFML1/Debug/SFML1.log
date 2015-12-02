@@ -1,4 +1,4 @@
-﻿Build started 12/2/2015 3:17:18 PM.
+﻿Build started 12/2/2015 3:19:01 PM.
      1>Project "C:\Users\Fumiko\Source\Repos\DarkMatter\SFML1\SFML1\SFML1.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\TGUI\include /I..\SFML_32\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt test.cpp
@@ -10,4 +10,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.23
+Time Elapsed 00:00:01.11
