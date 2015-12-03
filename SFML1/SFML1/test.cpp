@@ -3,6 +3,8 @@
 #include <Box2D\Box2D.h>
 #include <iostream>
 
+// Change this number to change which level you have completed up until 
+int level = 3;
 
 void loginScreen(tgui::Gui& gui)
 {
@@ -78,13 +80,13 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../images/satan.jpg");
+		spritesheet2->load("../images/skeleton_lock.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 200);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(666);
 
-		spritesheet3->load("../images/satan.jpg");
+		spritesheet3->load("../images/cell_lock.jpg");
 		spritesheet3->setSize(200, 140);
 		spritesheet3->setPosition(575, 200);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
@@ -92,7 +94,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		break;
 
 	case 2:
-		spritesheet1->load("../images/body.jpg");
+		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 200);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
@@ -104,20 +106,20 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
-		spritesheet3->load("../images/satan.jpg");
+		spritesheet3->load("../images/cell_lock.jpg");
 		spritesheet3->setSize(200, 140);
 		spritesheet3->setPosition(575, 200);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(666);
 		break;
 	case 3:
-		spritesheet1->load("../images/body.jpg");
+		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 200);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../images/skeleton.jpg");
+		spritesheet2->load("../images/skeleton_done.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 200);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
@@ -133,28 +135,6 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		break;
 	}
 
-	/*tgui::SpriteSheet::Ptr spritesheet1(gui);
-	spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
-	spritesheet1->setSize(200, 140);
-	spritesheet1->setPosition(25, 200);
-	spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
-	spritesheet1->setCallbackId(3);
-
-	tgui::SpriteSheet::Ptr spritesheet2(gui);
-	spritesheet2->load("../TGUI/examples/Linux.jpg");
-	spritesheet2->setSize(200, 140);
-	spritesheet2->setPosition(300, 200);
-	spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
-	spritesheet2->setCallbackId(4);
-
-	tgui::SpriteSheet::Ptr spritesheet3(gui);
-	spritesheet3->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
-	spritesheet3->setSize(200, 140);
-	spritesheet3->setPosition(575, 200);
-	spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
-	spritesheet3->setCallbackId(5);
-	*/
-
 	// Create Level Labels
 	tgui::Label::Ptr level1Label(gui);
 	level1Label->setText("Level 1");
@@ -167,72 +147,13 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	tgui::Label::Ptr level3label(gui);
 	level3label->setText("Level 3");
 	level3label->setPosition(615, 390);
-
-	//sf::Drawable canvas(gui);
-
-	/*tgui::Canvas::Ptr canvas(gui);
-	canvas->setSize(200, 140);
-	canvas->setPosition(200, 150);
-	canvas->*/
-
-	//tgui::Panel::Ptr panel(gui, "Level 1");
-	//panel->setSize(200, 140);
-	//panel->setPosition(200, 150);
-	//panel->setBackgroundTexture(&texture);
-	////panel->setBackgroundColor(sf::Color::Green);
-	//panel->bindCallback(tgui::Button::LeftMouseClicked);
-	//panel->setCallbackId(3);
-	//
-	
-	
-	//tgui::Button::Ptr level1(gui);
-	//level1->("../TGUI/examples/ThinkLinux.jpg");
-	//level1->setPosition(200, 250);
-	//tgui::ChildWindow::Ptr level1(gui);
-	//level1->load("../TGUI/examples/ThinkLinux.jpg");
-	//level1->setIcon("../TGUI/examples/ThinkLinux.jpg");
-	//level1->setSize(200, 200);
-	//level1->setPosition(200, 250);
-	//// Create the password label
-	//tgui::Label::Ptr labelPassword(gui);
-	//labelPassword->setText("Password:");
-	//labelPassword->setPosition(200, 250);
-
-	//// Create the username edit box
-	//tgui::EditBox::Ptr editBoxUsername(gui, "Username");
-	//editBoxUsername->load("../TGUI/widgets/Black.conf");
-	//editBoxUsername->setSize(400, 40);
-	//editBoxUsername->setPosition(200, 140);
-
-	//// Create the password edit box (we will copy the previously created edit box)
-	//tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
-	//editBoxPassword->setPosition(200, 290);
-	//editBoxPassword->setPasswordCharacter('*');
-
-	//// Create the login button
-	//tgui::Button::Ptr button(gui);
-	//button->load("../TGUI/widgets/Black.conf");
-	//button->setSize(260, 60);
-	//button->setPosition(270, 400);
-	//button->setText("Login");
-	//button->bindCallback(tgui::Button::LeftMouseClicked);
-	//button->setCallbackId(1);
-
-	//// Create the new account button 
-	//tgui::Button::Ptr newAccountButton(gui);
-	//newAccountButton->load("../TGUI/widgets/Black.conf");
-	//newAccountButton->setSize(260, 60);
-	//newAccountButton->setPosition(270, 500);
-	//newAccountButton->setText("New Account");
-	//newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
-	//newAccountButton->setCallbackId(2);
 }
 
 void level2(tgui::Gui& gui){
 
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-	picture->load("../images/skeleton_arrow.jpg");
+	picture->load("../images/skeleton.jpg");
 	picture->setSize(800, 600);
 
 	// Drop down comboxes
@@ -431,6 +352,21 @@ void level2check(tgui::Gui& gui)
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
+
+	if (progress->getValue() == 98)
+	{
+		progress->setValue(100);
+		gui.remove(gui.get("level3Done"));
+
+		// Create the done button
+		tgui::Button::Ptr nextButton(gui);
+		nextButton->load("../TGUI/widgets/Black.conf");
+		nextButton->setSize(260, 60);
+		nextButton->setPosition(55, 520);
+		nextButton->setText("Next");
+		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
+		nextButton->setCallbackId(22);
+	}
 }
 
 void level3(tgui::Gui& gui)
@@ -624,14 +560,6 @@ void level3check(tgui::Gui& gui)
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(32);
-
-		//tgui::Button::Ptr doneButton = gui.get("level3Done");
-		//doneButton->setText("Next");
-		//levelSelectionScreen(gui, 3);
-		//doneButton->
-		//doneButton->bindCallback(tgui::Button::LeftMouseClicked);
-		//doneButton->setCallbackId(1);
-		//levelComplete(3);
 	}
 }
 
@@ -695,8 +623,6 @@ int main()
 				std::cout << "Made it here" << std::endl;
 
 				// This levelNum int will come from the database 
-				int level = 3;
-
 				levelSelectionScreen(gui, level);
 
 				///** Prepare the window */
@@ -779,6 +705,11 @@ int main()
 				level2check(gui);
 			}
 
+			if (callback.id == 22)
+			{
+				levelSelectionScreen(gui, 3);
+			}
+
 			if (callback.id == 5)
 			{
 				std::cout << "Loading Level 3" << std::endl;
@@ -794,7 +725,7 @@ int main()
 
 			if (callback.id == 32)
 			{
-				levelSelectionScreen(gui, 3);
+				levelSelectionScreen(gui, 4);
 			}
 		}
 
