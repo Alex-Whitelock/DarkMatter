@@ -149,6 +149,143 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	level3label->setPosition(615, 390);
 }
 
+/*
+*  Helper Method for making the "Combos" AKA "pull-down" menu selectors.  This method will create the combo and
+*    populate it with the options for the player.
+*
+*  @param gui - GUI object, needed in this method for the purpose of creating the new combo within the game GUI
+*  @param bodyPart - string containing the name of the body part to have its pull-down made
+*  @param xPos - x position of the combo.  The combo should appear at the tail of the arrow on the background picture
+*  @param yPos - y position of the combo on the screen.
+*/
+void makeComboHelper(tgui::Gui& gui, std::string bodyPart, int xPos, int yPos)
+{
+	tgui::ComboBox::Ptr Combo(gui, bodyPart);
+	Combo->load("../TGUI/widgets/Black.conf");
+	Combo->setSize(120, 21);
+	Combo->setPosition(xPos, yPos);
+	Combo->addItem("Knee");
+	Combo->addItem("Shoulder");
+	Combo->addItem("Toes");
+	Combo->addItem("Head");
+	Combo->addItem("Arm");
+	Combo->addItem("Neck");
+	Combo->addItem("Hand");
+}
+
+/*
+*  Level 1 is a skin level level.  The body parts to label are skin deep (head, shoulders, knees, toes, etc).  This
+*    method handles the creation and positioning of all objects on the screen.  This includes the background picture,
+*    each pull-down menu, the "Submit" button and the progress bar.
+*
+*  @param gui - GUI object passed through representing the Game GUI
+*/
+void level1(tgui::Gui& gui)
+{
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../images/body.jpg");
+	picture->setSize(800, 600);
+
+	//Make the pull-down selectors for each body part
+	makeComboHelper(gui, "Head", 135, 78);
+	makeComboHelper(gui, "Shoulder", 105, 215);
+	makeComboHelper(gui, "Knee", 120, 445);
+	makeComboHelper(gui, "Toes", 95, 230);
+	makeComboHelper(gui, "Neck", 540, 190);
+	makeComboHelper(gui, "Arm", 570, 290);
+	makeComboHelper(gui, "Hand", 585, 365);
+
+	// Create SubmitButton button
+	tgui::Button::Ptr SubmitButton(gui);
+	SubmitButton->load("../TGUI/widgets/Black.conf");
+	SubmitButton->setSize(260, 60);
+	SubmitButton->setPosition(530, 520);
+	SubmitButton->setText("Submit");
+	SubmitButton->bindCallback(tgui::Button::LeftMouseClicked);
+	SubmitButton->setCallbackId(11);
+
+	// Create Secret button
+	tgui::Button::Ptr SecretPhase(gui);
+	SecretPhase->load("../TGUI/widgets/Black.conf");
+	SecretPhase->setSize(400, 150);
+	SecretPhase->setPosition(200, 80);
+	SecretPhase->hide();
+	SecretPhase->setText("Proceed to Secret Phase!");
+	SecretPhase->bindCallback(tgui::Button::LeftMouseClicked);
+	SecretPhase->setCallbackId(12);
+
+	// Create the progressBar label
+	tgui::Label::Ptr progressBarLabel(gui);
+	progressBarLabel->setText("Progress");
+	progressBarLabel->setTextColor(sf::Color::Black);
+	progressBarLabel->setPosition(580, 10);
+
+	tgui::LoadingBar::Ptr progressBar(gui, "skinProgress");
+	progressBar->load("../TGUI/widgets/Black.conf");
+	progressBar->setPosition(530, 50);
+	progressBar->setSize(250, 30);
+	progressBar->setValue(0);
+}
+
+/*
+*  Helper method for checking a level.  Checks the user's input(s) in pull-down menus for correctness.
+*  Changes the color of the text based on correctness as well and updates the progress bar accordingly.
+*
+*  @param gui - GUI object passed along
+*  @param bodyPart - string identifying which body part is being checked (which pull-down)
+*  @param correctAnswer - int containing the correct answer for the pulldown.  To be compared with input(s)
+*  @param progress - Keeps track of the progress bar and updates according to correctness and score
+*/
+void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
+{
+	//tgui::LoadingBar::Ptr progress = gui.get("skinProgress");
+	tgui::ComboBox::Ptr temp = gui.get(bodyPart);
+	int checkAnswer = temp->getSelectedItemIndex();
+	if (checkAnswer == correctAnswer)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+	if (progress->getValue() == 98)
+	{
+		progress->setValue(100);
+		gui.remove(gui.get("level3Done"));
+
+		// Create the done button
+		tgui::Button::Ptr nextButton(gui);
+		nextButton->load("../TGUI/widgets/Black.conf");
+		nextButton->setSize(260, 60);
+		nextButton->setPosition(530, 520);
+		nextButton->setText("Next");
+		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
+		nextButton->setCallbackId(12);
+	}
+}
+/*
+*  This method will check for correctness of the user's input for level 1.  This method is a callback handler
+*    for the "Submit" button in the skin level.  This method will change the color of the letters depending on correctness
+*    as well as update the progress bar for the skin level
+*/
+void checkLevel1(tgui::Gui& gui)
+{
+	tgui::LoadingBar::Ptr progress = gui.get("skinProgress"); //get progress info from skin level
+	progress->setValue(0); //Reinitialize to 0 in order to prevent double-points
+
+	//Use Helper to check each pull-down option for correctness
+	helpCheckLevel(gui, "Head", 3, progress);
+	helpCheckLevel(gui, "Shoulder", 1, progress);
+	helpCheckLevel(gui, "Knee", 0, progress);
+	helpCheckLevel(gui, "Toes", 2, progress);
+	helpCheckLevel(gui, "Neck", 5, progress);
+	helpCheckLevel(gui, "Arm", 4, progress);
+	helpCheckLevel(gui, "Hand", 6, progress);
+}
+
 void level2(tgui::Gui& gui){
 
 	// Create the background image
@@ -246,7 +383,7 @@ void level2(tgui::Gui& gui){
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
 	button->setPosition(55, 520);
-	button->setText("Done");
+	button->setText("Submit");
 	button->bindCallback(tgui::Button::LeftMouseClicked);
 	button->setCallbackId(21);
 
@@ -381,7 +518,7 @@ void level3(tgui::Gui& gui)
 	doneButton->load("../TGUI/widgets/Black.conf");
 	doneButton->setSize(260, 60);
 	doneButton->setPosition(270, 500);
-	doneButton->setText("Done");
+	doneButton->setText("Submit");
 	doneButton->bindCallback(tgui::Button::LeftMouseClicked);
 	doneButton->setCallbackId(31);
 
@@ -688,6 +825,9 @@ int main()
 			if (callback.id == 3)
 			{
 				std::cout << "Loading Level 1" << std::endl;
+				window.clear();
+				gui.removeAllWidgets();
+				level1(gui);
 			}
 
 			if (callback.id == 4)
@@ -697,6 +837,16 @@ int main()
 				window.clear();
 				gui.removeAllWidgets();
 				level2(gui);
+			}
+
+			if (callback.id == 11)
+			{
+				checkLevel1(gui);
+			}
+
+			if (callback.id == 12)
+			{
+				levelSelectionScreen(gui, 2);
 			}
 
 			if (callback.id == 21)
