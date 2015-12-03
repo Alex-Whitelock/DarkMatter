@@ -8,7 +8,7 @@ void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-   // picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+    // picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
 	picture->load("../images/satan.jpg");
 	picture->setSize(800, 600);
 
@@ -61,9 +61,9 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	picture->setSize(800, 600);
 
 	// Create the levelSelect label
-	tgui::Label::Ptr levelSelectLable(gui);
-	levelSelectLable->setText("Please select your level...");
-	levelSelectLable->setPosition(200, 100);
+	tgui::Label::Ptr levelSelectLabel(gui);
+	levelSelectLabel->setText("Please select your level...");
+	levelSelectLabel->setPosition(200, 100);
 
 	tgui::SpriteSheet::Ptr spritesheet1(gui);
 	tgui::SpriteSheet::Ptr spritesheet2(gui);
@@ -155,18 +155,18 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	spritesheet3->setCallbackId(5);
 	*/
 
-	// Create Level Lables
-	tgui::Label::Ptr level1Lable(gui);
-	level1Lable->setText("Level 1");
-	level1Lable->setPosition(65, 390);
+	// Create Level Labels
+	tgui::Label::Ptr level1Label(gui);
+	level1Label->setText("Level 1");
+	level1Label->setPosition(65, 390);
 
-	tgui::Label::Ptr level2lable(gui);
-	level2lable->setText("Level 2");
-	level2lable->setPosition(340, 390);
+	tgui::Label::Ptr level2label(gui);
+	level2label->setText("Level 2");
+	level2label->setPosition(340, 390);
 
-	tgui::Label::Ptr level3lable(gui);
-	level3lable->setText("Level 3");
-	level3lable->setPosition(615, 390);
+	tgui::Label::Ptr level3label(gui);
+	level3label->setText("Level 3");
+	level3label->setPosition(615, 390);
 
 	//sf::Drawable canvas(gui);
 
@@ -239,18 +239,62 @@ void level2(tgui::Gui& gui){
 	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
 	comboBox1->load("../TGUI/widgets/Black.conf");
 	comboBox1->setSize(120, 21);
-	comboBox1->setPosition(203, 340);
+	comboBox1->setPosition(150, 350);
 	comboBox1->addItem("Femur");
 	comboBox1->addItem("Cranium");
 	comboBox1->addItem("Pelvis");
+	comboBox1->addItem("Humerus");	
+	comboBox1->addItem("Carpals");
+	comboBox1->addItem("Patella");
+	comboBox1->addItem("Vertebrae");
 
 	tgui::ComboBox::Ptr comboBox2(gui, "Cranium");
 	comboBox2->load("../TGUI/widgets/Black.conf");
 	comboBox2->setSize(120, 21);
-	comboBox2->setPosition(429, 28);
+	comboBox2->setPosition(130, 27);
 	comboBox2->addItem("Femur");
 	comboBox2->addItem("Cranium");
 	comboBox2->addItem("Pelvis");
+	comboBox2->addItem("Humerus");
+	comboBox2->addItem("Carpals");
+	comboBox2->addItem("Patella");
+	comboBox2->addItem("Vertebrae");
+
+	tgui::ComboBox::Ptr comboBox3(gui, "Pelvis");
+	comboBox3->load("../TGUI/widgets/Black.conf");
+	comboBox3->setSize(120, 21);
+	comboBox3->setPosition(559, 273);
+	comboBox3->addItem("Femur");
+	comboBox3->addItem("Cranium");
+	comboBox3->addItem("Pelvis");
+	comboBox3->addItem("Humerus");
+	comboBox3->addItem("Carpals");
+	comboBox3->addItem("Patella");
+	comboBox3->addItem("Vertebrae");
+
+	tgui::ComboBox::Ptr comboBox4(gui, "Humerus");
+	comboBox4->load("../TGUI/widgets/Black.conf");
+	comboBox4->setSize(120, 21);
+	comboBox4->setPosition(52, 128);
+	comboBox4->addItem("Femur");
+	comboBox4->addItem("Cranium");
+	comboBox4->addItem("Pelvis");
+	comboBox4->addItem("Humerus");
+	comboBox4->addItem("Carpals");
+	comboBox4->addItem("Patella");
+	comboBox4->addItem("Vertebrae");
+
+	tgui::ComboBox::Ptr comboBox6(gui, "Patella");
+	comboBox6->load("../TGUI/widgets/Black.conf");
+	comboBox6->setSize(120, 21);
+	comboBox6->setPosition(595, 400);
+	comboBox6->addItem("Femur");
+	comboBox6->addItem("Cranium");
+	comboBox6->addItem("Pelvis");
+	comboBox6->addItem("Humerus");
+	comboBox6->addItem("Carpals");
+	comboBox6->addItem("Patella");
+	comboBox6->addItem("Vertebrae");
 
 	// Create Done button
 	tgui::Button::Ptr button(gui);
@@ -265,11 +309,11 @@ void level2(tgui::Gui& gui){
 	tgui::Label::Ptr progressBarLabel(gui);
 	progressBarLabel->setText("Progress");
 	progressBarLabel->setTextColor(sf::Color::Black);
-	progressBarLabel->setPosition(580, 10);
+	progressBarLabel->setPosition(585, 510);
 
 	tgui::LoadingBar::Ptr progressBar(gui, "boneProgress");
 	progressBar->load("../TGUI/widgets/Black.conf");
-	progressBar->setPosition(530, 50);
+	progressBar->setPosition(540, 550);
 	progressBar->setSize(250, 30);
 	progressBar->setValue(0);
 }
@@ -304,6 +348,29 @@ void level2check(tgui::Gui& gui)
 	else
 		temp->setTextColor(sf::Color::Red);
 
+	temp = gui.get("Pelvis");
+	test = temp->getSelectedItemIndex();
+	if (test == 2)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("Humerus");
+	test = temp->getSelectedItemIndex();
+	if (test == 3)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
 }
 
 void level3(tgui::Gui& gui)
