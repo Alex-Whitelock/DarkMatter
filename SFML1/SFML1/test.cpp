@@ -9,7 +9,7 @@ void loginScreen(tgui::Gui& gui)
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
     // picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
-	picture->load("../images/satan.jpg");
+	picture->load("../images/bio.jpg");
 	picture->setSize(800, 600);
 
 	// Create the username label
@@ -57,7 +57,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-	picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+	picture->load("../images/bio.jpg");
 	picture->setSize(800, 600);
 
 	// Create the levelSelect label
@@ -72,7 +72,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	switch (levelNum)
 	{
 	case 1:
-		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 200);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
@@ -92,7 +92,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		break;
 
 	case 2:
-		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 200);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
@@ -111,7 +111,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet3->setCallbackId(666);
 		break;
 	case 3:
-		spritesheet1->load("../TGUI/examples/ThinkLinux.jpg");
+		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 200);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
@@ -775,6 +775,7 @@ int main()
 
 			if (callback.id == 21)
 			{
+				// Check bone level's answers
 				level2check(gui);
 			}
 
