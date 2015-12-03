@@ -284,6 +284,18 @@ void level2(tgui::Gui& gui){
 	comboBox4->addItem("Patella");
 	comboBox4->addItem("Vertebrae");
 
+	tgui::ComboBox::Ptr comboBox5(gui, "Carpals");
+	comboBox5->load("../TGUI/widgets/Black.conf");
+	comboBox5->setSize(120, 21);
+	comboBox5->setPosition(65, 250);
+	comboBox5->addItem("Femur");
+	comboBox5->addItem("Cranium");
+	comboBox5->addItem("Pelvis");
+	comboBox5->addItem("Humerus");
+	comboBox5->addItem("Carpals");
+	comboBox5->addItem("Patella");
+	comboBox5->addItem("Vertebrae");
+
 	tgui::ComboBox::Ptr comboBox6(gui, "Patella");
 	comboBox6->load("../TGUI/widgets/Black.conf");
 	comboBox6->setSize(120, 21);
@@ -295,6 +307,18 @@ void level2(tgui::Gui& gui){
 	comboBox6->addItem("Carpals");
 	comboBox6->addItem("Patella");
 	comboBox6->addItem("Vertebrae");
+
+	tgui::ComboBox::Ptr comboBox7(gui, "Vertebrae");
+	comboBox7->load("../TGUI/widgets/Black.conf");
+	comboBox7->setSize(120, 21);
+	comboBox7->setPosition(538, 178);
+	comboBox7->addItem("Femur");
+	comboBox7->addItem("Cranium");
+	comboBox7->addItem("Pelvis");
+	comboBox7->addItem("Humerus");
+	comboBox7->addItem("Carpals");
+	comboBox7->addItem("Patella");
+	comboBox7->addItem("Vertebrae");
 
 	// Create Done button
 	tgui::Button::Ptr button(gui);
@@ -363,6 +387,42 @@ void level2check(tgui::Gui& gui)
 	temp = gui.get("Humerus");
 	test = temp->getSelectedItemIndex();
 	if (test == 3)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("Carpals");
+	test = temp->getSelectedItemIndex();
+	if (test == 4)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("Patella");
+	test = temp->getSelectedItemIndex();
+	if (test == 5)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+	
+	temp = gui.get("Vertebrae");
+	test = temp->getSelectedItemIndex();
+	if (test == 6)
 	{
 		temp->setTextColor(sf::Color::Green);
 		int val = progress->getValue();
