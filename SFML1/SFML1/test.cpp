@@ -232,24 +232,77 @@ void level2(tgui::Gui& gui){
 
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-	picture->load("../images/skeleton.jpg");
+	picture->load("../images/skeleton_arrow.jpg");
 	picture->setSize(800, 600);
 
+	// Drop down comboxes
 	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
 	comboBox1->load("../TGUI/widgets/Black.conf");
 	comboBox1->setSize(120, 21);
 	comboBox1->setPosition(203, 340);
-	comboBox1->addItem("Skull");
 	comboBox1->addItem("Femur");
+	comboBox1->addItem("Cranium");
 	comboBox1->addItem("Pelvis");
 
+	tgui::ComboBox::Ptr comboBox2(gui, "Cranium");
+	comboBox2->load("../TGUI/widgets/Black.conf");
+	comboBox2->setSize(120, 21);
+	comboBox2->setPosition(429, 28);
+	comboBox2->addItem("Femur");
+	comboBox2->addItem("Cranium");
+	comboBox2->addItem("Pelvis");
+
+	// Create Done button
 	tgui::Button::Ptr button(gui);
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
 	button->setPosition(55, 520);
 	button->setText("Done");
 	button->bindCallback(tgui::Button::LeftMouseClicked);
-	button->setCallbackId(22);
+	button->setCallbackId(21);
+
+	// Create the progressBar label
+	tgui::Label::Ptr progressBarLabel(gui);
+	progressBarLabel->setText("Progress");
+	progressBarLabel->setTextColor(sf::Color::Black);
+	progressBarLabel->setPosition(580, 10);
+
+	tgui::LoadingBar::Ptr progressBar(gui, "boneProgress");
+	progressBar->load("../TGUI/widgets/Black.conf");
+	progressBar->setPosition(530, 50);
+	progressBar->setSize(250, 30);
+	progressBar->setValue(0);
+}
+
+void level2check(tgui::Gui& gui)
+{
+	tgui::LoadingBar::Ptr progress = gui.get("boneProgress");
+	progress->setValue(0);
+
+	tgui::ComboBox::Ptr temp = gui.get("Femur");
+	int test = temp->getSelectedItemIndex();
+	std::cout << test << std::endl;
+	if (test == 0)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
+
+	temp = gui.get("Cranium");
+	test = temp->getSelectedItemIndex();
+	if (test == 1)
+	{
+		temp->setTextColor(sf::Color::Green);
+		int val = progress->getValue();
+		val = val + 100 / 7;
+		progress->setValue(val);
+	}
+	else
+		temp->setTextColor(sf::Color::Red);
 
 }
 
@@ -586,19 +639,16 @@ int main()
 
 			if (callback.id == 4)
 			{
+				// Load the bone level
 				std::cout << "Loading Level 2" << std::endl;
 				window.clear();
 				gui.removeAllWidgets();
 				level2(gui);
 			}
 
-			if (callback.id == 22)
+			if (callback.id == 21)
 			{
-				// Load the bone level
-				tgui::ComboBox::Ptr temp = gui.get("Femur");
-				std::string test = temp->getSelectedItem();
-				std::cout << test << std::endl;
-				std::cout << temp->getSelectedItemIndex() << std::endl;
+				level2check(gui);
 			}
 
 			if (callback.id == 5)
