@@ -4,7 +4,10 @@
 #include <iostream>
 
 // Change this number to change which level you have completed up until 
-int level = 3;
+int level = 1;
+
+/** We need this to easily convert between pixel and real-world coordinates*/
+static const float SCALE = 30.f;
 
 void loginScreen(tgui::Gui& gui)
 {
@@ -14,25 +17,40 @@ void loginScreen(tgui::Gui& gui)
 	picture->load("../images/bio.jpg");
 	picture->setSize(800, 600);
 
+	// Create the levelSelect label
+	tgui::Label::Ptr nameLabel(gui);
+	nameLabel->setTextColor(sf::Color::Green);
+	nameLabel->setTextSize(160);
+	nameLabel->setTextStyle(sf::Text::Bold);
+	nameLabel->setText("BioFun");
+	nameLabel->setPosition(140, 30);
+
+	tgui::Label::Ptr nameLabel2(gui);
+	nameLabel2->setTextColor(sf::Color::White);
+	nameLabel2->setTextSize(22);
+	nameLabel2->setTextStyle(sf::Text::Bold);
+	nameLabel2->setText("Brought to you by DarkMatter");
+	nameLabel2->setPosition(235, 160);
+
 	// Create the username label
 	tgui::Label::Ptr labelUsername(gui);
 	labelUsername->setText("Username:");
-	labelUsername->setPosition(200, 100);
+	labelUsername->setPosition(200, 210);
 
 	// Create the password label
 	tgui::Label::Ptr labelPassword(gui);
 	labelPassword->setText("Password:");
-	labelPassword->setPosition(200, 250);
+	labelPassword->setPosition(200, 310);
 
 	// Create the username edit box
 	tgui::EditBox::Ptr editBoxUsername(gui, "Username");
 	editBoxUsername->load("../TGUI/widgets/Black.conf");
 	editBoxUsername->setSize(400, 40);
-	editBoxUsername->setPosition(200, 140);
+	editBoxUsername->setPosition(200, 240);
 
 	// Create the password edit box (we will copy the previously created edit box)
 	tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
-	editBoxPassword->setPosition(200, 290);
+	editBoxPassword->setPosition(200, 340);
 	editBoxPassword->setPasswordCharacter('*');
 
 	// Create the login button
@@ -48,7 +66,7 @@ void loginScreen(tgui::Gui& gui)
 	tgui::Button::Ptr newAccountButton(gui);
 	newAccountButton->load("../TGUI/widgets/Black.conf");
 	newAccountButton->setSize(260, 60);
-	newAccountButton->setPosition(270, 500);
+	newAccountButton->setPosition(270, 480);
 	newAccountButton->setText("New Account");
 	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
 	newAccountButton->setCallbackId(2);
@@ -64,8 +82,11 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 
 	// Create the levelSelect label
 	tgui::Label::Ptr levelSelectLabel(gui);
-	levelSelectLabel->setText("Please select your level...");
-	levelSelectLabel->setPosition(200, 100);
+	levelSelectLabel->setTextColor(sf::Color::Green);
+	levelSelectLabel->setTextSize(60);
+	levelSelectLabel->setTextStyle(sf::Text::Bold);
+	levelSelectLabel->setText("Select your Level...");
+	levelSelectLabel->setPosition(130, 130);
 
 	tgui::SpriteSheet::Ptr spritesheet1(gui);
 	tgui::SpriteSheet::Ptr spritesheet2(gui);
@@ -76,23 +97,22 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	case 1:
 		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
-		spritesheet1->setPosition(25, 200);
+		spritesheet1->setPosition(25, 230);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
 		spritesheet2->load("../images/skeleton_lock.jpg");
 		spritesheet2->setSize(200, 140);
-		spritesheet2->setPosition(300, 200);
+		spritesheet2->setPosition(300, 230);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(666);
 
 		spritesheet3->load("../images/cell_lock.jpg");
 		spritesheet3->setSize(200, 140);
-		spritesheet3->setPosition(575, 200);
+		spritesheet3->setPosition(575, 230);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(666);
 		break;
-
 	case 2:
 		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
@@ -100,7 +120,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../images/skeleton.jpg");
+		spritesheet2->load("../images/skeleton_edit.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 200);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
@@ -131,6 +151,25 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(5);
 		break;
+	case 4:
+		spritesheet1->load("../images/body.jpg");
+		spritesheet1->setSize(200, 140);
+		spritesheet1->setPosition(25, 200);
+		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet1->setCallbackId(3);
+
+		spritesheet2->load("../images/skeleton_edit.jpg");
+		spritesheet2->setSize(200, 140);
+		spritesheet2->setPosition(300, 200);
+		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet2->setCallbackId(4);
+
+		spritesheet3->load("../images/cell.gif");
+		spritesheet3->setSize(200, 140);
+		spritesheet3->setPosition(575, 200);
+		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
+		spritesheet3->setCallbackId(5);
+		break;
 	default:
 		break;
 	}
@@ -150,6 +189,144 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 }
 
 /*
+*	Helper method for Celebration that creates the ground for the Box2D physics engine
+*/
+void CreateGround(b2World& World, float X, float Y)
+{
+	b2BodyDef BodyDef;
+	BodyDef.position = b2Vec2(X / SCALE, Y / SCALE);
+	BodyDef.type = b2_staticBody;
+	b2Body* Body = World.CreateBody(&BodyDef);
+
+	b2PolygonShape Shape;
+	Shape.SetAsBox((600.f / 2) / SCALE, (2.f / 2) / SCALE);
+	b2FixtureDef FixtureDef;
+	FixtureDef.density = 0.f;
+	FixtureDef.shape = &Shape;
+	Body->CreateFixture(&FixtureDef);
+}
+
+/*
+*	Helper method for Celebration that creates the Box2D fixtures that the SFML textures are applied to
+*	in the Box2D physics engine.
+*/
+void CreateBox(b2World& World, float X, float Y)
+{
+	// Random Confetti
+	int _X = (rand() % 600) + 1;
+	int _Y = (rand() % 160) + 1;
+
+	b2BodyDef BodyDef;
+	BodyDef.position = b2Vec2(_X / SCALE, _Y / SCALE);
+	BodyDef.type = b2_dynamicBody;
+	b2Body* Body = World.CreateBody(&BodyDef);
+
+	b2PolygonShape Shape;
+	Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
+	b2FixtureDef FixtureDef;
+	FixtureDef.density = 1.f;
+	FixtureDef.friction = 0.7f;
+	FixtureDef.shape = &Shape;
+	Body->CreateFixture(&FixtureDef);
+}
+
+void celebration()
+{
+	/** Prepare the window */
+	sf::RenderWindow childWindow(sf::VideoMode(600, 400, 32), "Celebrate!");
+	childWindow.setFramerateLimit(60);
+	tgui::Gui childGui(childWindow);
+
+	/** Prepare the world */
+	//b2Vec2 Gravity(0.f, 9.8f); // Earth gravity
+	b2Vec2 Gravity(0.f, 4.8f);
+	b2World World(Gravity);
+	CreateGround(World, 300.f, 400.f);
+
+	/** Prepare textures */
+	sf::Texture GroundTexture;
+	GroundTexture.loadFromFile("ground.png");
+	sf::Texture BoxTexture1;
+	BoxTexture1.loadFromFile("../images/Confetti_goldStar.png");
+	sf::Texture BoxTexture2;
+	BoxTexture2.loadFromFile("../images/Confetti_blueStar.png");
+	sf::Texture BoxTexture3;
+	BoxTexture3.loadFromFile("../images/Confetti_greenStar.png");
+
+	while (childWindow.isOpen())
+	{
+		CreateBox(World, 300.f, 100.f);
+		World.Step(1 / 60.f, 8, 3);
+		childWindow.clear(sf::Color::White);
+
+		int BoxCount = 1;
+		int BodyCount = 0;
+		for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
+		{
+			if (BodyIterator->GetType() == b2_dynamicBody)
+			{
+				sf::Sprite Sprite;
+				if (BoxCount == 1) {
+					Sprite.setTexture(BoxTexture1); //gold
+				}
+				if (BoxCount == 2) {
+					Sprite.setTexture(BoxTexture2); //blue
+				}
+				if (BoxCount == 3) {
+					Sprite.setTexture(BoxTexture3); //green
+					BoxCount = 0;
+				}
+				BoxCount++;
+
+				Sprite.setOrigin(16.f, 16.f); // For 32x32 box
+				Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
+				Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
+				childWindow.draw(Sprite);
+
+				BodyCount++;
+				//std::cout << BodyCount << std::endl;
+				if (BodyCount == 120)
+					childWindow.close();
+			}
+			else
+			{
+				sf::Sprite GroundSprite;
+				GroundSprite.setTexture(GroundTexture);
+				GroundSprite.setOrigin(300.f, 1.f);
+				GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
+				GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+				childWindow.draw(GroundSprite);
+			}
+		}
+		// Congratulations text
+		sf::Font font;
+		font.loadFromFile("../images/Yikes!.ttf");
+
+		sf::Text text1;
+		text1.setFont(font);
+		text1.setString("Congratulations!!!");
+		text1.setColor(sf::Color::Black);
+		text1.setStyle(sf::Text::Bold);
+		text1.setCharacterSize(80);
+		text1.setPosition(30, 100);
+		text1.setStyle(sf::Text::Regular);
+		childWindow.draw(text1);
+
+		sf::Text text2;
+		text2.setFont(font);
+		text2.setString("Level Completed");
+		text2.setColor(sf::Color::Black);
+		text2.setStyle(sf::Text::Bold);
+		text2.setCharacterSize(60);
+		text2.setPosition(130, 200);
+		text2.setStyle(sf::Text::Regular);
+		childWindow.draw(text2);
+
+		childWindow.display();
+	}
+}
+
+/*
 *  Helper Method for making the "Combos" AKA "pull-down" menu selectors.  This method will create the combo and
 *    populate it with the options for the player.
 *
@@ -158,15 +335,15 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 *  @param xPos - x position of the combo.  The combo should appear at the tail of the arrow on the background picture
 *  @param yPos - y position of the combo on the screen.
 */
-void makeComboHelper(tgui::Gui& gui, std::string bodyPart, int xPos, int yPos)
+void makeComboHelper(tgui::Gui& gui, std::string bodyPart, float xPos, float yPos)
 {
 	tgui::ComboBox::Ptr Combo(gui, bodyPart);
 	Combo->load("../TGUI/widgets/Black.conf");
 	Combo->setSize(120, 21);
 	Combo->setPosition(xPos, yPos);
-	Combo->addItem("Knee");
-	Combo->addItem("Shoulder");
 	Combo->addItem("Toes");
+	Combo->addItem("Knee");
+	Combo->addItem("Shoulder");	
 	Combo->addItem("Head");
 	Combo->addItem("Arm");
 	Combo->addItem("Neck");
@@ -184,20 +361,20 @@ void level1(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-	picture->load("../images/body.jpg");
+	picture->load("../images/body_arrow.jpg");
 	picture->setSize(800, 600);
 
 	//Make the pull-down selectors for each body part
 	makeComboHelper(gui, "Head", 135, 78);
 	makeComboHelper(gui, "Shoulder", 105, 215);
 	makeComboHelper(gui, "Knee", 120, 445);
-	makeComboHelper(gui, "Toes", 95, 230);
+	makeComboHelper(gui, "Toes", 95, 530);
 	makeComboHelper(gui, "Neck", 540, 190);
 	makeComboHelper(gui, "Arm", 570, 290);
 	makeComboHelper(gui, "Hand", 585, 365);
 
 	// Create SubmitButton button
-	tgui::Button::Ptr SubmitButton(gui);
+	tgui::Button::Ptr SubmitButton(gui, "SubmitButton");
 	SubmitButton->load("../TGUI/widgets/Black.conf");
 	SubmitButton->setSize(260, 60);
 	SubmitButton->setPosition(530, 520);
@@ -242,6 +419,7 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 	//tgui::LoadingBar::Ptr progress = gui.get("skinProgress");
 	tgui::ComboBox::Ptr temp = gui.get(bodyPart);
 	int checkAnswer = temp->getSelectedItemIndex();
+
 	if (checkAnswer == correctAnswer)
 	{
 		temp->setTextColor(sf::Color::Green);
@@ -251,19 +429,22 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
+
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
-		gui.remove(gui.get("level3Done"));
+		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
-		tgui::Button::Ptr nextButton(gui);
+		tgui::Button::Ptr nextButton(gui, "NextButton");
 		nextButton->load("../TGUI/widgets/Black.conf");
 		nextButton->setSize(260, 60);
 		nextButton->setPosition(530, 520);
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(12);
+
+		celebration(); // ********************************************************************* Celebrate!!!
 	}
 }
 /*
@@ -278,9 +459,9 @@ void checkLevel1(tgui::Gui& gui)
 
 	//Use Helper to check each pull-down option for correctness
 	helpCheckLevel(gui, "Head", 3, progress);
-	helpCheckLevel(gui, "Shoulder", 1, progress);
-	helpCheckLevel(gui, "Knee", 0, progress);
-	helpCheckLevel(gui, "Toes", 2, progress);
+	helpCheckLevel(gui, "Shoulder", 2, progress);
+	helpCheckLevel(gui, "Knee", 1, progress);
+	helpCheckLevel(gui, "Toes", 0, progress);
 	helpCheckLevel(gui, "Neck", 5, progress);
 	helpCheckLevel(gui, "Arm", 4, progress);
 	helpCheckLevel(gui, "Hand", 6, progress);
@@ -379,7 +560,7 @@ void level2(tgui::Gui& gui){
 	comboBox7->addItem("Vertebrae");
 
 	// Create Done button
-	tgui::Button::Ptr button(gui);
+	tgui::Button::Ptr button(gui, "SubmitButton");
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
 	button->setPosition(55, 520);
@@ -492,8 +673,8 @@ void level2check(tgui::Gui& gui)
 
 	if (progress->getValue() == 98)
 	{
-		progress->setValue(100);
-		gui.remove(gui.get("level3Done"));
+		progress->setValue(100);		
+		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
 		tgui::Button::Ptr nextButton(gui);
@@ -503,6 +684,8 @@ void level2check(tgui::Gui& gui)
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(22);
+
+		celebration(); // ********************************************************************* Celebrate!!!
 	}
 }
 
@@ -513,14 +696,14 @@ void level3(tgui::Gui& gui)
 	picture->load("../images/cell.gif");
 	picture->setSize(800, 600);
 
-	// Create the done button
-	tgui::Button::Ptr doneButton(gui, "level3Done");
-	doneButton->load("../TGUI/widgets/Black.conf");
-	doneButton->setSize(260, 60);
-	doneButton->setPosition(270, 500);
-	doneButton->setText("Submit");
-	doneButton->bindCallback(tgui::Button::LeftMouseClicked);
-	doneButton->setCallbackId(31);
+	// Create the submit button
+	tgui::Button::Ptr submitButton(gui, "level3Done");
+	submitButton->load("../TGUI/widgets/Black.conf");
+	submitButton->setSize(260, 60);
+	submitButton->setPosition(270, 500);
+	submitButton->setText("Submit");
+	submitButton->bindCallback(tgui::Button::LeftMouseClicked);
+	submitButton->setCallbackId(31);
 
 	tgui::Tab::Ptr nucleusTab(gui, "nucleus");
 	nucleusTab->load("../TGUI/widgets/Black.conf");
@@ -686,7 +869,7 @@ void level3check(tgui::Gui& gui)
 
 	if (progress->getValue() == 98)
 	{
-		progress->setValue(100);
+		progress->setValue(100);		
 		gui.remove(gui.get("level3Done"));
 		
 		// Create the done button
@@ -697,6 +880,8 @@ void level3check(tgui::Gui& gui)
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(32);
+
+		celebration(); // ********************************************************************* Celebrate!!!
 	}
 }
 
@@ -760,61 +945,7 @@ int main()
 				std::cout << "Made it here" << std::endl;
 
 				// This levelNum int will come from the database 
-				levelSelectionScreen(gui, level);
-
-				///** Prepare the window */
-				//sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Test");
-				//Window.setFramerateLimit(60);
-				//
-				///** Prepare the world */
-				//b2Vec2 Gravity(0.f, 9.8f);
-				//b2World World(Gravity);
-				//CreateGround(World, 400.f, 500.f);
-				//
-				///** Prepare textures */
-				//sf::Texture GroundTexture;
-				//sf::Texture BoxTexture;
-				//GroundTexture.loadFromFile("ground.png");
-				//BoxTexture.loadFromFile("box.png");
-				//
-				//std::cout << "Hello world" << std::endl;
-				//
-				//while (Window.isOpen())
-				//{
-				//	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-				//	{
-				//		int MouseX = sf::Mouse::getPosition(Window).x;
-				//		int MouseY = sf::Mouse::getPosition(Window).y;
-				//		CreateBox(World, MouseX, MouseY);
-				//	}
-				//	World.Step(1 / 60.f, 8, 3);
-				//
-				//	Window.clear(sf::Color::White);
-				//	int BodyCount = 0;
-				//	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
-				//	{
-				//		if (BodyIterator->GetType() == b2_dynamicBody)
-				//		{
-				//			sf::Sprite Sprite;
-				//			Sprite.setTexture(BoxTexture);
-				//			Sprite.setOrigin(16.f, 16.f);
-				//			Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
-				//			Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
-				//			Window.draw(Sprite);
-				//			++BodyCount;
-				//		}
-				//		else
-				//		{
-				//			sf::Sprite GroundSprite;
-				//			GroundSprite.setTexture(GroundTexture);
-				//			GroundSprite.setOrigin(400.f, 8.f);
-				//			GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
-				//			GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
-				//			Window.draw(GroundSprite);
-				//		}
-				//	}
-				//	Window.display();
-				//}					
+				levelSelectionScreen(gui, level);				
 			}
 
 			if (callback.id == 2)
