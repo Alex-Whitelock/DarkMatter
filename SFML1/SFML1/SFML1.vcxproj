@@ -46,8 +46,8 @@
     </LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\SFML_32\include;..\;$(IncludePath)</IncludePath>
-    <LibraryPath>..\SFML_32\lib;..\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\mysql2\include;..\SFML_32\include;..\;$(IncludePath)</IncludePath>
+    <LibraryPath>..\mysql2\lib;..\SFML_32\lib;..\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,7 +58,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;Box2D.lib;tgui-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;Box2D.lib;tgui-d.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\TGUI\lib;..\SFML_32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

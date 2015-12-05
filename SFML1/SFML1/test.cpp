@@ -8,6 +8,8 @@
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
 #include <iostream>
+#include <string>
+#include <mysql.h>
 
 // Change this number to change which level you have completed up until 
 int level = 1;
@@ -19,7 +21,7 @@ void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-    // picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
+	// picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
 	picture->load("../images/bio.jpg");
 	picture->setSize(800, 600);
 
@@ -251,8 +253,8 @@ void celebration()
 	b2Vec2 Gravity(0.f, 4.8f);
 	b2World World(Gravity);
 	CreateGround(World, 300.f, 400.f);
-	
-	/** Prepare audio */	
+
+	/** Prepare audio */
 	sf::Music music;
 	//if (!music.openFromFile("../audio/WooHoo.wav")) {
 	//if (!music.openFromFile("../audio/Applause.wav")) {
@@ -280,7 +282,7 @@ void celebration()
 		CreateBox(World, 300.f, 100.f);
 		World.Step(1 / 60.f, 8, 3);
 		childWindow.clear(sf::Color::White);
-		
+
 		int BoxCount = 1;
 		int BodyCount = 0;
 		for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
@@ -312,7 +314,7 @@ void celebration()
 					//sound.stop();
 					music.stop();
 					childWindow.close();
-				}					
+				}
 			}
 			else
 			{
@@ -369,7 +371,7 @@ void makeComboHelper(tgui::Gui& gui, std::string bodyPart, float xPos, float yPo
 	Combo->setPosition(xPos, yPos);
 	Combo->addItem("Toes");
 	Combo->addItem("Knee");
-	Combo->addItem("Shoulder");	
+	Combo->addItem("Shoulder");
 	Combo->addItem("Head");
 	Combo->addItem("Arm");
 	Combo->addItem("Neck");
@@ -510,7 +512,7 @@ void level2(tgui::Gui& gui){
 	comboBox1->addItem("Femur");
 	comboBox1->addItem("Cranium");
 	comboBox1->addItem("Pelvis");
-	comboBox1->addItem("Humerus");	
+	comboBox1->addItem("Humerus");
 	comboBox1->addItem("Carpals");
 	comboBox1->addItem("Patella");
 	comboBox1->addItem("Vertebrae");
@@ -686,7 +688,7 @@ void level2check(tgui::Gui& gui)
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
-	
+
 	temp = gui.get("Vertebrae");
 	test = temp->getSelectedItemIndex();
 	if (test == 6)
@@ -701,7 +703,7 @@ void level2check(tgui::Gui& gui)
 
 	if (progress->getValue() == 98)
 	{
-		progress->setValue(100);		
+		progress->setValue(100);
 		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
@@ -897,9 +899,9 @@ void level3check(tgui::Gui& gui)
 
 	if (progress->getValue() == 98)
 	{
-		progress->setValue(100);		
+		progress->setValue(100);
 		gui.remove(gui.get("level3Done"));
-		
+
 		// Create the done button
 		tgui::Button::Ptr nextButton(gui);
 		nextButton->load("../TGUI/widgets/Black.conf");
@@ -916,9 +918,9 @@ void level3check(tgui::Gui& gui)
 //void levelComplete(int levelNumber)
 //{
 
-	// MySQL calls to update user progress 
+// MySQL calls to update user progress 
 
-	// Level Complete Animation 
+// Level Complete Animation 
 //}
 
 /** We need this to easily convert between pixel and real-world coordinates*/
@@ -941,6 +943,18 @@ int main()
 
 	// Load the widgets
 	loginScreen(gui);
+
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL *connection, mysql;
+
+	int state;
+
+	//initialize mysql connection
+	mysql_init(&mysql);
+
+	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	// Main loop
 	while (window.isOpen())
@@ -966,19 +980,53 @@ int main()
 				tgui::EditBox::Ptr editBoxUsername = gui.get("Username");
 				tgui::EditBox::Ptr editBoxPassword = gui.get("Password");
 
-				sf::String username = editBoxUsername->getText();
-				sf::String password = editBoxPassword->getText();
+				std::string username = editBoxUsername->getText();
+				std::string password = editBoxPassword->getText();
+				std::string command = "SELECT * FROM Users WHERE UserName = '" + username + "' AND Password = '" + password + "'";
 
-				// Continue here by checking if the username and password are correct ...
-				std::cout << "Made it here" << std::endl;
+				mysql_query(connection, command.c_str());
+				result = mysql_store_result(connection);
 
-				// This levelNum int will come from the database 
-				levelSelectionScreen(gui, level);
+				if ((row = mysql_fetch_row(result)))
+				{
+					std::cout << "Logged in successfully!" << std::endl;
+					// This levelNum int will come from the database 
+					levelSelectionScreen(gui, level);
+				}
+				else
+				{
+					std::cout << "Incorrect username and/or password. Please try again..." << std::endl;
+				}
+				mysql_free_result(result);
 			}
 
 			if (callback.id == 2)
 			{
-				std::cout << "Creating account..." << std::endl;
+				// Get the username and password
+				tgui::EditBox::Ptr editBoxUsername = gui.get("Username");
+				tgui::EditBox::Ptr editBoxPassword = gui.get("Password");
+
+				sf::String username = editBoxUsername->getText();
+				sf::String password = editBoxPassword->getText();
+
+				//Check if user exists
+				std::string command = "SELECT * FROM Users WHERE UserName = '" + username + "'";
+
+				mysql_query(connection, command.c_str());
+				result = mysql_store_result(connection);
+
+				if (!(row = mysql_fetch_row(result)))
+				{
+					std::string command = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
+					mysql_query(connection, command.c_str());
+					std::cout << "Creating account..." << std::endl;
+				}
+				else
+				{
+					std::cout << "This username already exists. Please try again..." << std::endl;
+				}
+
+				mysql_free_result(result);
 			}
 
 			if (callback.id == 3)
@@ -1045,6 +1093,9 @@ int main()
 
 		window.display();
 	}
+
+
+	mysql_close(connection);
 
 	return EXIT_SUCCESS;
 }
