@@ -946,6 +946,7 @@ int main()
 
 	MYSQL_RES *result;
 	MYSQL_ROW row;
+	MYSQL_FIELD *field;
 	MYSQL *connection, mysql;
 
 	int state;
@@ -989,6 +990,28 @@ int main()
 
 				if ((row = mysql_fetch_row(result)))
 				{
+					int i = 0;
+					bool admin = false;
+
+					//Grabs all fields from Users table and traverses them
+					while ((field = mysql_fetch_field(result)))
+					{
+						std::cout << field->name << ": " << row[i] << std::endl;						
+						std::string temp = field->name;
+						if (temp.compare("Admin") == 0){
+							std::string admVal = row[i];
+							admin = admVal.compare("1") == 0;
+						}
+
+						i++;
+					}
+
+					if (admin){
+						std::cout << "User " << username << " is admin" << std::endl;
+					}
+					else{
+						std::cout << "User " << username << " is not admin" << std::endl;
+					}
 					std::cout << "Logged in successfully!" << std::endl;
 					// This levelNum int will come from the database 
 					levelSelectionScreen(gui, level);
