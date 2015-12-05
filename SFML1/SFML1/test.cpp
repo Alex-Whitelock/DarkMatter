@@ -1,3 +1,7 @@
+/// Team Dark Matter
+/// CS 3505: Prof David Johnson: Fall 2015
+/// Team Members: Anne Aoki, Daniel Clyde, Alice Griffin, Igor Ivanov, April McCarrick, Brandon Tobin, Alex Whitelock
+
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include <SFML\Audio\Music.hpp>
@@ -465,6 +469,9 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(12);
+
+		//Send stuff to database
+
 
 		celebration(); // ********************************************************************* Celebrate!!!
 	}
