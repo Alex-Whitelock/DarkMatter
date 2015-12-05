@@ -1,4 +1,6 @@
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
+#include <SFML\Audio\Music.hpp>
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
 #include <iostream>
@@ -232,6 +234,9 @@ void CreateBox(b2World& World, float X, float Y)
 
 void celebration()
 {
+	// Number of confetti stars to make
+	float stars = 100;
+
 	/** Prepare the window */
 	sf::RenderWindow childWindow(sf::VideoMode(600, 400, 32), "Celebrate!");
 	childWindow.setFramerateLimit(60);
@@ -242,6 +247,19 @@ void celebration()
 	b2Vec2 Gravity(0.f, 4.8f);
 	b2World World(Gravity);
 	CreateGround(World, 300.f, 400.f);
+	
+	/** Prepare audio */	
+	sf::Music music;
+	//if (!music.openFromFile("../audio/WooHoo.wav")) {
+	//if (!music.openFromFile("../audio/Applause.wav")) {
+	if (!music.openFromFile("../audio/Music_Box.wav")) {
+		std::cout << "Music NOT Loaded" << std::endl;
+	}
+	else {
+		std::cout << "Music Loaded" << std::endl;
+	}
+	//sound.play();
+	music.play();
 
 	/** Prepare textures */
 	sf::Texture GroundTexture;
@@ -258,7 +276,7 @@ void celebration()
 		CreateBox(World, 300.f, 100.f);
 		World.Step(1 / 60.f, 8, 3);
 		childWindow.clear(sf::Color::White);
-
+		
 		int BoxCount = 1;
 		int BodyCount = 0;
 		for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
@@ -286,7 +304,11 @@ void celebration()
 				BodyCount++;
 				//std::cout << BodyCount << std::endl;
 				if (BodyCount == 120)
+				{
+					//sound.stop();
+					music.stop();
 					childWindow.close();
+				}					
 			}
 			else
 			{
@@ -945,7 +967,8 @@ int main()
 				std::cout << "Made it here" << std::endl;
 
 				// This levelNum int will come from the database 
-				levelSelectionScreen(gui, level);				
+				levelSelectionScreen(gui, level);
+				celebration(); // **********************************************************************************
 			}
 
 			if (callback.id == 2)
