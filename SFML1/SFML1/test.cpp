@@ -470,10 +470,9 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(12);
 
+		celebration();
+
 		//Send stuff to database
-
-
-		celebration(); // ********************************************************************* Celebrate!!!
 	}
 }
 /*
@@ -714,7 +713,7 @@ void level2check(tgui::Gui& gui)
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(22);
 
-		celebration(); // ********************************************************************* Celebrate!!!
+		celebration();
 	}
 }
 
@@ -910,7 +909,7 @@ void level3check(tgui::Gui& gui)
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(32);
 
-		celebration(); // ********************************************************************* Celebrate!!!
+		celebration();
 	}
 }
 
@@ -975,7 +974,6 @@ int main()
 
 				// This levelNum int will come from the database 
 				levelSelectionScreen(gui, level);
-				celebration(); // **********************************************************************************
 			}
 
 			if (callback.id == 2)
