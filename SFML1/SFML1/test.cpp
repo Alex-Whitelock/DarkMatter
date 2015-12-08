@@ -14,6 +14,10 @@
 // Change this number to change which level you have completed up until 
 int level = 1;
 
+// Message that will be displayed on login screen depending on login status
+std::string loginMessage;
+std::string loginMess2;
+
 /** We need this to easily convert between pixel and real-world coordinates*/
 static const float SCALE = 30.f;
 
@@ -43,29 +47,29 @@ void loginScreen(tgui::Gui& gui)
 	// Create the username label
 	tgui::Label::Ptr labelUsername(gui);
 	labelUsername->setText("Username:");
-	labelUsername->setPosition(200, 210);
+	labelUsername->setPosition(200, 200);
 
 	// Create the password label
 	tgui::Label::Ptr labelPassword(gui);
 	labelPassword->setText("Password:");
-	labelPassword->setPosition(200, 310);
+	labelPassword->setPosition(200, 290);
 
 	// Create the username edit box
 	tgui::EditBox::Ptr editBoxUsername(gui, "Username");
 	editBoxUsername->load("../TGUI/widgets/Black.conf");
 	editBoxUsername->setSize(400, 40);
-	editBoxUsername->setPosition(200, 240);
+	editBoxUsername->setPosition(200, 230);
 
 	// Create the password edit box (we will copy the previously created edit box)
 	tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
-	editBoxPassword->setPosition(200, 340);
+	editBoxPassword->setPosition(200, 320);
 	editBoxPassword->setPasswordCharacter('*');
 
 	// Create the login button
 	tgui::Button::Ptr button(gui);
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
-	button->setPosition(270, 400);
+	button->setPosition(270, 380);
 	button->setText("Login");
 	button->bindCallback(tgui::Button::LeftMouseClicked);
 	button->setCallbackId(1);
@@ -74,11 +78,26 @@ void loginScreen(tgui::Gui& gui)
 	tgui::Button::Ptr newAccountButton(gui);
 	newAccountButton->load("../TGUI/widgets/Black.conf");
 	newAccountButton->setSize(260, 60);
-	newAccountButton->setPosition(270, 480);
+	newAccountButton->setPosition(270, 455);
 	newAccountButton->setText("New Account");
 	newAccountButton->bindCallback(tgui::Button::LeftMouseClicked);
 	newAccountButton->setCallbackId(2);
 
+	// Create the status update label
+	tgui::Label::Ptr labelStatus(gui, "StatusUpdate");
+	labelStatus->setTextColor(sf::Color::Yellow);
+	labelStatus->setTextSize(30);
+	float messLength = loginMessage.length();
+	labelStatus->setPosition(400 - ((messLength * 15) / 2), 530);
+	labelStatus->setText(loginMessage);
+
+	// Create the status update label
+	tgui::Label::Ptr labelStatus2(gui, "StatusUpdate2");
+	labelStatus2->setTextColor(sf::Color::Yellow);
+	labelStatus2->setTextSize(30);
+	float messLength2 = loginMess2.length();
+	labelStatus2->setPosition(400 - ((messLength2 * 15) / 2), 560);
+	labelStatus2->setText(loginMess2);
 }
 
 void levelSelectionScreen(tgui::Gui& gui, int levelNum)
@@ -94,7 +113,7 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	levelSelectLabel->setTextSize(60);
 	levelSelectLabel->setTextStyle(sf::Text::Bold);
 	levelSelectLabel->setText("Select your Level...");
-	levelSelectLabel->setPosition(130, 130);
+	levelSelectLabel->setPosition(130, 100);
 
 	tgui::SpriteSheet::Ptr spritesheet1(gui);
 	tgui::SpriteSheet::Ptr spritesheet2(gui);
@@ -105,76 +124,76 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	case 1:
 		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
-		spritesheet1->setPosition(25, 230);
+		spritesheet1->setPosition(25, 180);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
 		spritesheet2->load("../images/skeleton_lock.jpg");
 		spritesheet2->setSize(200, 140);
-		spritesheet2->setPosition(300, 230);
+		spritesheet2->setPosition(300, 180);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(666);
 
 		spritesheet3->load("../images/cell_lock.jpg");
 		spritesheet3->setSize(200, 140);
-		spritesheet3->setPosition(575, 230);
+		spritesheet3->setPosition(575, 180);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(666);
 		break;
 	case 2:
 		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
-		spritesheet1->setPosition(25, 200);
+		spritesheet1->setPosition(25, 180);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
 		spritesheet2->load("../images/skeleton_edit.jpg");
 		spritesheet2->setSize(200, 140);
-		spritesheet2->setPosition(300, 200);
+		spritesheet2->setPosition(300, 180);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
 		spritesheet3->load("../images/cell_lock.jpg");
 		spritesheet3->setSize(200, 140);
-		spritesheet3->setPosition(575, 200);
+		spritesheet3->setPosition(575, 180);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(666);
 		break;
 	case 3:
 		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
-		spritesheet1->setPosition(25, 200);
+		spritesheet1->setPosition(25, 180);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
 		spritesheet2->load("../images/skeleton_done.jpg");
 		spritesheet2->setSize(200, 140);
-		spritesheet2->setPosition(300, 200);
+		spritesheet2->setPosition(300, 180);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
 		spritesheet3->load("../images/cell.gif");
 		spritesheet3->setSize(200, 140);
-		spritesheet3->setPosition(575, 200);
+		spritesheet3->setPosition(575, 180);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(5);
 		break;
 	case 4:
 		spritesheet1->load("../images/body.jpg");
 		spritesheet1->setSize(200, 140);
-		spritesheet1->setPosition(25, 200);
+		spritesheet1->setPosition(25, 180);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
 		spritesheet2->load("../images/skeleton_edit.jpg");
 		spritesheet2->setSize(200, 140);
-		spritesheet2->setPosition(300, 200);
+		spritesheet2->setPosition(300, 180);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
 		spritesheet3->load("../images/cell.gif");
 		spritesheet3->setSize(200, 140);
-		spritesheet3->setPosition(575, 200);
+		spritesheet3->setPosition(575, 180);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet3->setCallbackId(5);
 		break;
@@ -185,15 +204,33 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 	// Create Level Labels
 	tgui::Label::Ptr level1Label(gui);
 	level1Label->setText("Level 1");
-	level1Label->setPosition(65, 390);
+	level1Label->setPosition(65, 340);
 
 	tgui::Label::Ptr level2label(gui);
 	level2label->setText("Level 2");
-	level2label->setPosition(340, 390);
+	level2label->setPosition(340, 340);
 
 	tgui::Label::Ptr level3label(gui);
 	level3label->setText("Level 3");
-	level3label->setPosition(615, 390);
+	level3label->setPosition(615, 340);
+
+	// Create the Return to Login Screen button
+	tgui::Button::Ptr toLoginButton(gui, "ToLogin");
+	toLoginButton->load("../TGUI/widgets/Black.conf");
+	toLoginButton->setSize(260, 60);
+	toLoginButton->setPosition(270, 390);
+	toLoginButton->setText("Return to Login");
+	toLoginButton->bindCallback(tgui::Button::LeftMouseClicked);
+	toLoginButton->setCallbackId(8);
+
+	// Create the Close button 
+	tgui::Button::Ptr closeButton(gui, "Close");
+	closeButton->load("../TGUI/widgets/Black.conf");
+	closeButton->setSize(260, 60);
+	closeButton->setPosition(270, 470);
+	closeButton->setText("End Game");
+	closeButton->bindCallback(tgui::Button::LeftMouseClicked);
+	closeButton->setCallbackId(9);
 }
 
 /*
@@ -264,7 +301,6 @@ void celebration()
 	else {
 		std::cout << "Music Loaded" << std::endl;
 	}
-	//sound.play();
 	music.play();
 
 	/** Prepare textures */
@@ -308,10 +344,8 @@ void celebration()
 				childWindow.draw(Sprite);
 
 				BodyCount++;
-				//std::cout << BodyCount << std::endl;
 				if (BodyCount == 120)
 				{
-					//sound.stop();
 					music.stop();
 					childWindow.close();
 				}
@@ -352,6 +386,21 @@ void celebration()
 
 		childWindow.display();
 	}
+}
+
+void lockedScreen()
+{
+	/** Prepare audio */
+	sf::Music music;
+	//if (!music.openFromFile("../audio/Sad_Trombone.wav")) {
+	//if (!music.openFromFile("../audio/Croud Boo 3.wav")) {
+	if (!music.openFromFile("../audio/Cartoon Hop.wav")) {
+		std::cout << "Sad Music NOT Loaded" << std::endl;
+	}
+	else {
+		std::cout << "Sad Music Loaded" << std::endl;
+	}
+	music.play();
 }
 
 /*
@@ -923,15 +972,6 @@ void level3check(tgui::Gui& gui)
 // Level Complete Animation 
 //}
 
-/** We need this to easily convert between pixel and real-world coordinates*/
-//static const float SCALE = 30.f;
-
-/** Create the base for the boxes to land */
-//void CreateGround(b2World& World, float X, float Y);
-
-/** Create the boxes */
-//void CreateBox(b2World& World, int MouseX, int MouseY);
-
 int main()
 {
 	// Create the window
@@ -1012,13 +1052,18 @@ int main()
 					else{
 						std::cout << "User " << username << " is not admin" << std::endl;
 					}
-					std::cout << "Logged in successfully!" << std::endl;
+					loginMessage = "Logged in successfully!";
+					std::cout << loginMessage << std::endl;
 					// This levelNum int will come from the database 
 					levelSelectionScreen(gui, level);
 				}
 				else
 				{
-					std::cout << "Incorrect username and/or password. Please try again..." << std::endl;
+					//loginMessage = "Incorrect username and/or password. Please try again...";
+					loginMessage = "Incorrect username and/or password.";
+					loginMess2 = "Please try again...";
+					std::cout << loginMessage << std::endl;
+					loginScreen(gui);
 				}
 				mysql_free_result(result);
 			}
@@ -1042,11 +1087,17 @@ int main()
 				{
 					std::string command = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
 					mysql_query(connection, command.c_str());
-					std::cout << "Creating account..." << std::endl;
+					loginMessage = "Creating account...";
+					std::cout << loginMessage << std::endl;
+					//loginScreen(gui);
 				}
 				else
 				{
-					std::cout << "This username already exists. Please try again..." << std::endl;
+					//loginMessage = "This username already exists. Please try again...";
+					loginMessage = "This username already exists.";
+					loginMess2 = "Please try again...";
+					std::cout << loginMessage << std::endl;
+					//loginScreen(gui);
 				}
 
 				mysql_free_result(result);
@@ -1069,6 +1120,27 @@ int main()
 				level2(gui);
 			}
 
+			if (callback.id == 5)
+			{
+				std::cout << "Loading Level 3" << std::endl;
+				window.clear();
+				gui.removeAllWidgets();
+				level3(gui);
+			}
+
+			// Generated from "Return to Login" button on level selection screen
+			if (callback.id == 8)
+			{
+				loginScreen(gui);
+			}
+
+			// Generated from "Exit" button on level selection screen
+			if (callback.id == 9)
+			{
+				mysql_close(connection);
+				window.close();
+			}
+
 			if (callback.id == 11)
 			{
 				checkLevel1(gui);
@@ -1088,15 +1160,7 @@ int main()
 			if (callback.id == 22)
 			{
 				levelSelectionScreen(gui, 3);
-			}
-
-			if (callback.id == 5)
-			{
-				std::cout << "Loading Level 3" << std::endl;
-				window.clear();
-				gui.removeAllWidgets();
-				level3(gui);
-			}
+			}			
 
 			if (callback.id == 31)
 			{
@@ -1106,6 +1170,11 @@ int main()
 			if (callback.id == 32)
 			{
 				levelSelectionScreen(gui, 4);
+			}
+
+			if (callback.id == 666)
+			{
+				lockedScreen();
 			}
 		}
 
@@ -1122,103 +1191,3 @@ int main()
 
 	return EXIT_SUCCESS;
 }
-
-
-///** We need this to easily convert between pixel and real-world coordinates*/
-//static const float SCALE = 30.f;
-//
-///** Create the base for the boxes to land */
-//void CreateGround(b2World& World, float X, float Y);
-//
-///** Create the boxes */
-//void CreateBox(b2World& World, int MouseX, int MouseY);
-//
-//int main()
-//{
-//	/** Prepare the window */
-//	sf::RenderWindow Window(sf::VideoMode(800, 600, 32), "Test");
-//	Window.setFramerateLimit(60);
-//
-//	/** Prepare the world */
-//	b2Vec2 Gravity(0.f, 9.8f);
-//	b2World World(Gravity);
-//	CreateGround(World, 400.f, 500.f);
-//
-//	/** Prepare textures */
-//	sf::Texture GroundTexture;
-//	sf::Texture BoxTexture;
-//	GroundTexture.loadFromFile("ground.png");
-//	BoxTexture.loadFromFile("box.png");
-//
-//	std::cout << "Hello world" << std::endl;
-//
-//	while (Window.isOpen())
-//	{
-//		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-//		{
-//			int MouseX = sf::Mouse::getPosition(Window).x;
-//			int MouseY = sf::Mouse::getPosition(Window).y;
-//			CreateBox(World, MouseX, MouseY);
-//		}
-//		World.Step(1 / 60.f, 8, 3);
-//
-//		Window.clear(sf::Color::White);
-//		int BodyCount = 0;
-//		for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
-//		{
-//			if (BodyIterator->GetType() == b2_dynamicBody)
-//			{
-//				sf::Sprite Sprite;
-//				Sprite.setTexture(BoxTexture);
-//				Sprite.setOrigin(16.f, 16.f);
-//				Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
-//				Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
-//				Window.draw(Sprite);
-//				++BodyCount;
-//			}
-//			else
-//			{
-//				sf::Sprite GroundSprite;
-//				GroundSprite.setTexture(GroundTexture);
-//				GroundSprite.setOrigin(400.f, 8.f);
-//				GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
-//				GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
-//				Window.draw(GroundSprite);
-//			}
-//		}
-//		Window.display();
-//	}
-//
-//	return 0;
-//}
-//
-//void CreateBox(b2World& World, int MouseX, int MouseY)
-//{
-//	b2BodyDef BodyDef;
-//	BodyDef.position = b2Vec2(MouseX / SCALE, MouseY / SCALE);
-//	BodyDef.type = b2_dynamicBody;
-//	b2Body* Body = World.CreateBody(&BodyDef);
-//
-//	b2PolygonShape Shape;
-//	Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
-//	b2FixtureDef FixtureDef;
-//	FixtureDef.density = 1.f;
-//	FixtureDef.friction = 0.7f;
-//	FixtureDef.shape = &Shape;
-//	Body->CreateFixture(&FixtureDef);
-//}
-//
-//void CreateGround(b2World& World, float X, float Y)
-//{
-//	b2BodyDef BodyDef;
-//	BodyDef.position = b2Vec2(X / SCALE, Y / SCALE);
-//	BodyDef.type = b2_staticBody;
-//	b2Body* Body = World.CreateBody(&BodyDef);
-//
-//	b2PolygonShape Shape;
-//	Shape.SetAsBox((800.f / 2) / SCALE, (16.f / 2) / SCALE);
-//	b2FixtureDef FixtureDef;
-//	FixtureDef.density = 0.f;
-//	FixtureDef.shape = &Shape;
-//	Body->CreateFixture(&FixtureDef);
-//}
