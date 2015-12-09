@@ -12,7 +12,7 @@
 #include <mysql.h>
 
 // Change this number to change which level you have completed up until 
-int level = 1;
+//int level = 3;
 
 // Message that will be displayed on login screen depending on login status
 std::string loginMessage;
@@ -87,7 +87,7 @@ void loginScreen(tgui::Gui& gui)
 	tgui::Label::Ptr labelStatus(gui, "StatusUpdate");
 	labelStatus->setTextColor(sf::Color::Yellow);
 	labelStatus->setTextSize(30);
-	float messLength = loginMessage.length();
+	int messLength = loginMessage.length();
 	labelStatus->setPosition(400 - ((messLength * 15) / 2), 530);
 	labelStatus->setText(loginMessage);
 
@@ -95,9 +95,76 @@ void loginScreen(tgui::Gui& gui)
 	tgui::Label::Ptr labelStatus2(gui, "StatusUpdate2");
 	labelStatus2->setTextColor(sf::Color::Yellow);
 	labelStatus2->setTextSize(30);
-	float messLength2 = loginMess2.length();
+	int messLength2 = loginMess2.length();
 	labelStatus2->setPosition(400 - ((messLength2 * 15) / 2), 560);
 	labelStatus2->setText(loginMess2);
+}
+
+int getGameLevel(MYSQL *connection, std::string user)
+{
+	int level = 0;
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+
+	std::string command = "SELECT * FROM Users WHERE UserName = '" + user + "'";
+	
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+	if ((row = mysql_fetch_row(result)))
+	{
+		int i = 0;
+		//Grabs all fields from Users table and traverses them
+		while ((field = mysql_fetch_field(result)))
+		{
+			std::string temp = field->name;
+			if (temp.compare("GameLevel") == 0){
+				std::string levelVal = row[i];
+				level = atoi(levelVal.c_str());
+			}
+			i++;
+		}
+	}
+	return level;
+}
+
+void advanceLevel(int currentLevel, MYSQL *connection, std::string user)
+{
+	std::string str_currentLevel = std::to_string(currentLevel);
+	// Update database, advance game level if applicable (if game level is not already greater than 1)
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+
+	std::string command = "SELECT * FROM Users WHERE Username = '" + user + "'";
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+
+	if ((row = mysql_fetch_row(result)))
+	{
+		int i = 0;
+		bool gameAdv = false;
+
+		//Grabs all fields from Users table and traverses them
+		while ((field = mysql_fetch_field(result)))
+		{
+			std::string temp = field->name;
+			if (temp.compare("GameLevel") == 0){
+				std::string gameVal = row[i];
+
+				if (gameVal.compare(str_currentLevel) == 0 && gameVal.compare("4") != 0)
+				{
+					currentLevel++;
+					std::string str_newlevel = std::to_string(currentLevel);
+					std::string command = "UPDATE Users SET GameLevel = '" + str_newlevel + "' WHERE Username = '" + user + "'";
+					mysql_query(connection, command.c_str());
+
+					std::cout << "Game level advances to " << currentLevel << std::endl;
+				}
+			}
+			i++;
+		}
+	}
 }
 
 void levelSelectionScreen(tgui::Gui& gui, int levelNum)
@@ -278,10 +345,10 @@ void CreateBox(b2World& World, float X, float Y)
 void celebration()
 {
 	// Number of confetti stars to make
-	float stars = 100;
+	float stars = 200;
 
 	/** Prepare the window */
-	sf::RenderWindow childWindow(sf::VideoMode(600, 400, 32), "Celebrate!");
+	sf::RenderWindow childWindow(sf::VideoMode(600, 600, 32), "Celebrate!");
 	childWindow.setFramerateLimit(60);
 	tgui::Gui childGui(childWindow);
 
@@ -289,18 +356,14 @@ void celebration()
 	//b2Vec2 Gravity(0.f, 9.8f); // Earth gravity
 	b2Vec2 Gravity(0.f, 4.8f);
 	b2World World(Gravity);
-	CreateGround(World, 300.f, 400.f);
+	CreateGround(World, 300.f, 600.f);
 
 	/** Prepare audio */
 	sf::Music music;
-	//if (!music.openFromFile("../audio/WooHoo.wav")) {
-	//if (!music.openFromFile("../audio/Applause.wav")) {
-	if (!music.openFromFile("../audio/Music_Box.wav")) {
-		std::cout << "Music NOT Loaded" << std::endl;
-	}
-	else {
-		std::cout << "Music Loaded" << std::endl;
-	}
+	//music.openFromFile("../audio/WooHoo.wav");
+	music.openFromFile("../audio/Applause.wav");
+	//music.openFromFile("../audio/Music_Box.wav");
+
 	music.play();
 
 	/** Prepare textures */
@@ -344,7 +407,7 @@ void celebration()
 				childWindow.draw(Sprite);
 
 				BodyCount++;
-				if (BodyCount == 120)
+				if (BodyCount == stars)
 				{
 					music.stop();
 					childWindow.close();
@@ -388,9 +451,9 @@ void celebration()
 	}
 }
 
-void lockedScreen()
-{
-	/** Prepare audio */
+void lockedScreen(tgui::Gui& gui)
+{	
+	// Prepare audio
 	sf::Music music;
 	//if (!music.openFromFile("../audio/Sad_Trombone.wav")) {
 	//if (!music.openFromFile("../audio/Croud Boo 3.wav")) {
@@ -401,6 +464,7 @@ void lockedScreen()
 		std::cout << "Sad Music Loaded" << std::endl;
 	}
 	music.play();
+	//levelSelectionScreen(gui, level);
 }
 
 /*
@@ -440,6 +504,15 @@ void level1(tgui::Gui& gui)
 	tgui::Picture::Ptr picture(gui);
 	picture->load("../images/body_arrow.jpg");
 	picture->setSize(800, 600);
+
+	// Create the Return to LevelSelectScreen button
+	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	toLevelsButton->load("../TGUI/widgets/Black.conf");
+	toLevelsButton->setSize(100, 50);
+	toLevelsButton->setPosition(10, 20);
+	toLevelsButton->setText("Back");
+	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
+	toLevelsButton->setCallbackId(10);
 
 	//Make the pull-down selectors for each body part
 	makeComboHelper(gui, "Head", 135, 78);
@@ -491,7 +564,8 @@ void level1(tgui::Gui& gui)
 *  @param correctAnswer - int containing the correct answer for the pulldown.  To be compared with input(s)
 *  @param progress - Keeps track of the progress bar and updates according to correctness and score
 */
-void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
+//void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
+void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress, MYSQL *connection, std::string user)
 {
 	//tgui::LoadingBar::Ptr progress = gui.get("skinProgress");
 	tgui::ComboBox::Ptr temp = gui.get(bodyPart);
@@ -510,6 +584,9 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
+		celebration();
+		advanceLevel(1, connection, user);
+		
 		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
@@ -520,10 +597,6 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(12);
-
-		celebration();
-
-		//Send stuff to database
 	}
 }
 /*
@@ -531,19 +604,28 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 *    for the "Submit" button in the skin level.  This method will change the color of the letters depending on correctness
 *    as well as update the progress bar for the skin level
 */
-void checkLevel1(tgui::Gui& gui)
+//void level1check(tgui::Gui& gui)
+void level1check(tgui::Gui& gui, MYSQL *connection, std::string user)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("skinProgress"); //get progress info from skin level
 	progress->setValue(0); //Reinitialize to 0 in order to prevent double-points
 
 	//Use Helper to check each pull-down option for correctness
-	helpCheckLevel(gui, "Head", 3, progress);
-	helpCheckLevel(gui, "Shoulder", 2, progress);
-	helpCheckLevel(gui, "Knee", 1, progress);
-	helpCheckLevel(gui, "Toes", 0, progress);
-	helpCheckLevel(gui, "Neck", 5, progress);
-	helpCheckLevel(gui, "Arm", 4, progress);
-	helpCheckLevel(gui, "Hand", 6, progress);
+	//helpCheckLevel(gui, "Head", 3, progress);
+	//helpCheckLevel(gui, "Shoulder", 2, progress);
+	//helpCheckLevel(gui, "Knee", 1, progress);
+	//helpCheckLevel(gui, "Toes", 0, progress);
+	//helpCheckLevel(gui, "Neck", 5, progress);
+	//helpCheckLevel(gui, "Arm", 4, progress);
+	//helpCheckLevel(gui, "Hand", 6, progress);
+
+	helpCheckLevel(gui, "Head", 3, progress, connection, user);
+	helpCheckLevel(gui, "Shoulder", 2, progress, connection, user);
+	helpCheckLevel(gui, "Knee", 1, progress, connection, user);
+	helpCheckLevel(gui, "Toes", 0, progress, connection, user);
+	helpCheckLevel(gui, "Neck", 5, progress, connection, user);
+	helpCheckLevel(gui, "Arm", 4, progress, connection, user);
+	helpCheckLevel(gui, "Hand", 6, progress, connection, user);
 }
 
 void level2(tgui::Gui& gui){
@@ -552,6 +634,15 @@ void level2(tgui::Gui& gui){
 	tgui::Picture::Ptr picture(gui);
 	picture->load("../images/skeleton.jpg");
 	picture->setSize(800, 600);
+
+	// Create the Return to LevelSelectScreen button
+	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	toLevelsButton->load("../TGUI/widgets/Black.conf");
+	toLevelsButton->setSize(100, 50);
+	toLevelsButton->setPosition(680, 20);
+	toLevelsButton->setText("Back");
+	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
+	toLevelsButton->setCallbackId(10);
 
 	// Drop down comboxes
 	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
@@ -638,11 +729,11 @@ void level2(tgui::Gui& gui){
 	comboBox7->addItem("Patella");
 	comboBox7->addItem("Vertebrae");
 
-	// Create Done button
+	// Create Submit button
 	tgui::Button::Ptr button(gui, "SubmitButton");
 	button->load("../TGUI/widgets/Black.conf");
 	button->setSize(260, 60);
-	button->setPosition(55, 520);
+	button->setPosition(20, 520);
 	button->setText("Submit");
 	button->bindCallback(tgui::Button::LeftMouseClicked);
 	button->setCallbackId(21);
@@ -660,7 +751,8 @@ void level2(tgui::Gui& gui){
 	progressBar->setValue(0);
 }
 
-void level2check(tgui::Gui& gui)
+//void level2check(tgui::Gui& gui)
+void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("boneProgress");
 	progress->setValue(0);
@@ -753,6 +845,9 @@ void level2check(tgui::Gui& gui)
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
+		celebration();
+		advanceLevel(2, connection, user);
+
 		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
@@ -764,7 +859,7 @@ void level2check(tgui::Gui& gui)
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(22);
 
-		celebration();
+		
 	}
 }
 
@@ -774,6 +869,15 @@ void level3(tgui::Gui& gui)
 	tgui::Picture::Ptr picture(gui);
 	picture->load("../images/cell.gif");
 	picture->setSize(800, 600);
+
+	// Create the Return to LevelSelectScreen button
+	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	toLevelsButton->load("../TGUI/widgets/Black.conf");
+	toLevelsButton->setSize(100, 50);
+	toLevelsButton->setPosition(10, 20);
+	toLevelsButton->setText("Back");
+	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
+	toLevelsButton->setCallbackId(10);
 
 	// Create the submit button
 	tgui::Button::Ptr submitButton(gui, "level3Done");
@@ -854,7 +958,8 @@ void level3(tgui::Gui& gui)
 	progressBar->setValue(0);
 }
 
-void level3check(tgui::Gui& gui)
+//void level3check(tgui::Gui& gui)
+void level3check(tgui::Gui& gui, MYSQL *connection, std::string user)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("cellProgress");
 	progress->setValue(0);
@@ -949,6 +1054,9 @@ void level3check(tgui::Gui& gui)
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
+		celebration();
+		advanceLevel(3, connection, user);
+
 		gui.remove(gui.get("level3Done"));
 
 		// Create the done button
@@ -958,9 +1066,7 @@ void level3check(tgui::Gui& gui)
 		nextButton->setPosition(270, 500);
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
-		nextButton->setCallbackId(32);
-
-		celebration();
+		nextButton->setCallbackId(32);		
 	}
 }
 
@@ -984,12 +1090,13 @@ int main()
 	// Load the widgets
 	loginScreen(gui);
 
+	int level = 0;
+	std::string user;
+
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	MYSQL_FIELD *field;
-	MYSQL *connection, mysql;
-
-	int state;
+	MYSQL *connection, mysql;	
 
 	//initialize mysql connection
 	mysql_init(&mysql);
@@ -1014,7 +1121,7 @@ int main()
 		tgui::Callback callback;
 		while (gui.pollCallback(callback))
 		{
-			// Make sure tha callback comes from the button
+			// Login button
 			if (callback.id == 1)
 			{
 				// Get the username and password
@@ -1022,16 +1129,16 @@ int main()
 				tgui::EditBox::Ptr editBoxPassword = gui.get("Password");
 
 				std::string username = editBoxUsername->getText();
-				std::string password = editBoxPassword->getText();
+				std::string password = editBoxPassword->getText();				
 				std::string command = "SELECT * FROM Users WHERE UserName = '" + username + "' AND Password = '" + password + "'";
 
 				mysql_query(connection, command.c_str());
 				result = mysql_store_result(connection);
-
 				if ((row = mysql_fetch_row(result)))
 				{
 					int i = 0;
 					bool admin = false;
+					user = username;
 
 					//Grabs all fields from Users table and traverses them
 					while ((field = mysql_fetch_field(result)))
@@ -1042,7 +1149,10 @@ int main()
 							std::string admVal = row[i];
 							admin = admVal.compare("1") == 0;
 						}
-
+						if (temp.compare("GameLevel") == 0){
+							std::string levelVal = row[i];
+							level = atoi(levelVal.c_str());
+						}
 						i++;
 					}
 
@@ -1052,6 +1162,9 @@ int main()
 					else{
 						std::cout << "User " << username << " is not admin" << std::endl;
 					}
+
+					loginMessage.clear();
+					loginMess2.clear();
 					loginMessage = "Logged in successfully!";
 					std::cout << loginMessage << std::endl;
 					// This levelNum int will come from the database 
@@ -1059,7 +1172,8 @@ int main()
 				}
 				else
 				{
-					//loginMessage = "Incorrect username and/or password. Please try again...";
+					loginMessage.clear();
+					loginMess2.clear();
 					loginMessage = "Incorrect username and/or password.";
 					loginMess2 = "Please try again...";
 					std::cout << loginMessage << std::endl;
@@ -1068,6 +1182,7 @@ int main()
 				mysql_free_result(result);
 			}
 
+			// New Account Button
 			if (callback.id == 2)
 			{
 				// Get the username and password
@@ -1077,30 +1192,50 @@ int main()
 				sf::String username = editBoxUsername->getText();
 				sf::String password = editBoxPassword->getText();
 
-				//Check if user exists
-				std::string command = "SELECT * FROM Users WHERE UserName = '" + username + "'";
-
-				mysql_query(connection, command.c_str());
-				result = mysql_store_result(connection);
-
-				if (!(row = mysql_fetch_row(result)))
+				// Do not allow user to be created with BLANK username or password
+				if (username != "" || password != "")
 				{
-					std::string command = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
+					//Check if user exists
+					std::string command = "SELECT * FROM Users WHERE Username = '" + username + "'";
+
 					mysql_query(connection, command.c_str());
-					loginMessage = "Creating account...";
-					std::cout << loginMessage << std::endl;
-					//loginScreen(gui);
+					result = mysql_store_result(connection);
+
+					if (!(row = mysql_fetch_row(result)))
+					{
+						std::string command = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
+						mysql_query(connection, command.c_str());
+
+						//std::string command2 = "INSERT INTO Game (Username, GameLevel) VALUES ('" + username + "', '1')";
+						//std::string command2 = "INSERT INTO Game (Username) VALUES ('" + username + "')";
+						//mysql_query(connection, command2.c_str());
+						
+						loginMessage.clear();
+						loginMess2.clear();
+						loginMessage = "Creating account...";
+						std::cout << loginMessage << std::endl;
+						levelSelectionScreen(gui, 1); // Start at Level=1 when creating new user
+					}
+					else
+					{
+						loginMessage.clear();
+						loginMess2.clear();
+						loginMessage = "This username already exists.";
+						loginMess2 = "Please try again...";
+						std::cout << loginMessage << std::endl;
+						loginScreen(gui);
+					}
+
+					mysql_free_result(result);
 				}
 				else
 				{
-					//loginMessage = "This username already exists. Please try again...";
-					loginMessage = "This username already exists.";
-					loginMess2 = "Please try again...";
+					loginMessage.clear();
+					loginMess2.clear();
+					loginMessage = "Please enter Valid Login and Password";
 					std::cout << loginMessage << std::endl;
-					//loginScreen(gui);
-				}
-
-				mysql_free_result(result);
+					loginScreen(gui);
+				}				
 			}
 
 			if (callback.id == 3)
@@ -1131,6 +1266,8 @@ int main()
 			// Generated from "Return to Login" button on level selection screen
 			if (callback.id == 8)
 			{
+				loginMessage.clear();
+				loginMess2.clear();
 				loginScreen(gui);
 			}
 
@@ -1141,52 +1278,63 @@ int main()
 				window.close();
 			}
 
+			// Back to LevelSelectionScreen from Level 1
+			if (callback.id == 10)
+			{
+				level = getGameLevel(connection, user);
+				levelSelectionScreen(gui, level);
+			}
+
 			if (callback.id == 11)
 			{
-				checkLevel1(gui);
+				//level1check(gui);
+				level1check(gui, connection, user);
 			}
 
 			if (callback.id == 12)
 			{
-				levelSelectionScreen(gui, 2);
+				//levelSelectionScreen(gui, 2);
+				level = getGameLevel(connection, user);
+				levelSelectionScreen(gui, level);
 			}
 
 			if (callback.id == 21)
 			{
-				// Check bone level's answers
-				level2check(gui);
+				//level2check(gui);
+				level2check(gui, connection, user);
 			}
 
 			if (callback.id == 22)
 			{
-				levelSelectionScreen(gui, 3);
-			}			
+				//levelSelectionScreen(gui, 3);
+				level = getGameLevel(connection, user);
+				levelSelectionScreen(gui, level);
+			}
 
 			if (callback.id == 31)
 			{
-				level3check(gui);
+				//level3check(gui);
+				level3check(gui, connection, user);
 			}
 
 			if (callback.id == 32)
 			{
-				levelSelectionScreen(gui, 4);
+				//levelSelectionScreen(gui, 4);
+				level = getGameLevel(connection, user);
+				levelSelectionScreen(gui, level);
 			}
 
 			if (callback.id == 666)
 			{
-				lockedScreen();
+				lockedScreen(gui);
 			}
 		}
-
 		window.clear();
 
 		// Draw all created widgets
 		gui.draw();
-
 		window.display();
 	}
-
-
 	mysql_close(connection);
 
 	return EXIT_SUCCESS;
