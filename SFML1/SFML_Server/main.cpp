@@ -5,9 +5,6 @@
 #include <mysql.h>
 
 
-//const unsigned short PORT = 5123;
-//nst std::string IPADDRESS("192.168.63.1");
-
 //sf::TcpSocket socket;
 sf::Mutex globalMutex;
 std::string msgSend;
@@ -22,64 +19,7 @@ struct PackStruct
 	bool admin;
 	bool authorized;
 	int level;
-	//sf::Uint8   Age;
-	//std::string Name;
-	//float       Height;
 };
-
-/*void DoStuff(void)
-{
-	static std::string oldMsg;
-	while (!quit)
-	{
-		sf::Packet packetSend;
-		globalMutex.lock();
-		packetSend << msgSend;
-		globalMutex.unlock();
-
-		socket.send(packetSend);
-
-		std::string msg;
-		sf::Packet packetReceive;
-
-		socket.receive(packetReceive);
-		if (packetReceive >> msg)
-		{
-			if (oldMsg != msg)
-				if (!msg.empty())
-				{
-					std::cout << msg << std::endl;
-					oldMsg = msg;
-				}
-		}
-	}
-}*/
-
-
-/*void serverStartUp(void)
-{
-	sf::TcpSocket sock;
-	sf::TcpListener listener;
-	listener.listen(PORT);
-	listener.accept(sock);
-	
-	if (listener.accept(sock) != sf::Socket::Done)
-	{
-		std::cout << "Made it here" << std::endl;
-	}
-
-	//std::cout << "New client connected: " << socket.getRemoteAddress() << std::endl;
-}
-*/
-/*ol Client(void)
-{
-	if (socket.connect(IPADDRESS, PORT) == sf::Socket::Done)
-	{
-		std::cout << "Connected\n";
-		return true;
-	}
-	return false;
-}*/
 
 void GetInput(void)
 {
@@ -174,8 +114,6 @@ int main()
 
 	sf::TcpListener listener;
 
-	//listener.listen(5123);
-
 	if (listener.listen(5000) != sf::TcpListener::Status::Done)
 		return 1;
 
@@ -191,15 +129,11 @@ int main()
 	{
 		if (client.receive(received) == sf::Socket::Done)
 		{
-			//std::string test;
-			//received >> test;
 			received >> packed;
 			std::cout << "Received packet that contains " << packed.connType << " " << packed.userName << " " << packed.password << " "<< std::endl;
 			if (packed.connType == "LOGIN")
 			{
 				packed = loginCheck(packed);
-				//sf::Packet temp;
-				//temp << packed;
 				received.clear();
 				received << packed;
 				client.send(received);
@@ -208,26 +142,5 @@ int main()
 		}
 	}
 
-	//ar who;
-	//d::cout << "Do you want to be a server (s) or a client (c) ? ";
-	//d::cin >> who;
-
-	// (who == 's')
-		//serverStartUp();
-	//se
-	//lient();
-
-	//thread = new sf::Thread(&DoStuff);
-	//thread->launch();
-
-	/*while (!quit)
-	{
-		GetInput();
-	}
-	if (thread)
-	{
-		thread->wait();
-		delete thread;
-	}*/
 	return 0;
 }

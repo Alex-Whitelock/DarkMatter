@@ -31,9 +31,6 @@ struct PackStruct
 	bool admin;
 	bool authorized;
 	int level;
-	//sf::Uint8   Age;
-	//std::string Name;
-	//float       Height;
 };
 
 sf::Packet& operator >>(sf::Packet& Packet, PackStruct& P)
@@ -53,7 +50,6 @@ void loginScreen(tgui::Gui& gui)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
-	// picture->load("../TGUI/examples/xubuntu_bg_aluminium.jpg");
 	picture->load("../images/bio.jpg");
 	picture->setSize(800, 600);
 
