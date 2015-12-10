@@ -491,6 +491,68 @@ void lockedScreen(tgui::Gui& gui)
 	//levelSelectionScreen(gui, level);
 }
 
+void teacherScreen(tgui::Gui& gui, MYSQL *connection)
+{
+	// Create the background image
+	tgui::Picture::Ptr picture(gui);
+	picture->load("../images/bio.jpg");
+	picture->setSize(800, 600);
+
+
+	tgui::ListBox::Ptr listBox(gui, "userbox");
+	listBox->load("../TGUI/widgets/Black.conf");
+	listBox->setSize(260, 400);
+	//listBox->setItemHeight(20);
+	listBox->setPosition(270, 50);
+	//listBox->addItem("Item 1");
+	//listBox->addItem("Item 2");
+	//listBox->addItem("Item 3");
+
+	// Create the login button
+	tgui::Button::Ptr button(gui);
+	button->load("../TGUI/widgets/Black.conf");
+	button->setSize(260, 60);
+	button->setPosition(270, 480);
+	button->setText("Delete");
+	button->bindCallback(tgui::Button::LeftMouseClicked);
+	button->setCallbackId(100);
+
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+
+	//std::cout << users << std::endl;
+
+	//std::string command = "SELECT * FROM Users";
+	std::string command = "SELECT `Username` FROM `Users`";
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+	//field = mysql_fetch_field(result);
+
+	while ((row = mysql_fetch_row(result)) != NULL)
+	{
+		std::string username = row[0];
+		std::cout << username << std::endl;
+		listBox->addItem(username);
+	}
+}
+
+void deleteUser(tgui::Gui& gui, MYSQL *connection)
+{
+	tgui::ListBox::Ptr temp = gui.get("userbox");
+	std::string name = temp->getSelectedItem();
+
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+
+	std::string command = "DELETE FROM Users WHERE Username=\"" + name + "\"";
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+
+	temp->removeItem(name);
+}
+
 /*
 *  Helper Method for making the "Combos" AKA "pull-down" menu selectors.  This method will create the combo and
 *    populate it with the options for the player.
@@ -1198,7 +1260,15 @@ int main()
 						loginMessage = "Logged in successfully!";
 						std::cout << loginMessage << std::endl;
 						// This levelNum int will come from the database 
-						levelSelectionScreen(gui, tobeSent.level);
+						if (tobeSent.admin == true)
+						{
+							teacherScreen(gui, connection);
+						}
+						else
+						{
+							levelSelectionScreen(gui, tobeSent.level);
+						}
+						
 					}
 					else
 					{
@@ -1353,6 +1423,11 @@ int main()
 				//levelSelectionScreen(gui, 4);
 				level = getGameLevel(connection, user);
 				levelSelectionScreen(gui, level);
+			}
+
+			if (callback.id == 100)
+			{
+				deleteUser(gui, connection);
 			}
 
 			if (callback.id == 666)
