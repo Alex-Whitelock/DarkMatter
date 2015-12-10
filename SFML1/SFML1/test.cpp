@@ -28,19 +28,33 @@ struct PackStruct
 	std::string connType;
 	std::string userName;
 	std::string password;
-	bool admin;
-	bool authorized;
-	int level;
+	bool admin = false;
+	bool authorized = false;
+	bool alreadyExist = false;
+	int level = -2;
 };
+
+PackStruct clearStruct(PackStruct p)
+{
+	p.connType = "";
+	p.userName = "";
+	p.password = "";
+	p.admin = false;
+	p.authorized = false;
+	p.alreadyExist = false;
+	int level = -2;
+
+	return p;
+}
 
 sf::Packet& operator >>(sf::Packet& Packet, PackStruct& P)
 {
-	return Packet >> P.connType >> P.userName >> P.password >> P.admin >> P.authorized >> P.level;
+	return Packet >> P.connType >> P.userName >> P.password >> P.admin >> P.authorized >> P.level >> P.alreadyExist;
 }
 
 sf::Packet& operator <<(sf::Packet& Packet, const PackStruct& P)
 {
-	return Packet << P.connType << P.userName << P.password << P.admin << P.authorized << P.level;
+	return Packet << P.connType << P.userName << P.password << P.admin << P.authorized << P.level << P.alreadyExist;
 }
 
 /** We need this to easily convert between pixel and real-world coordinates*/
@@ -48,6 +62,7 @@ static const float SCALE = 30.f;
 
 void loginScreen(tgui::Gui& gui)
 {
+	gui.removeAllWidgets();
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
 	picture->load("../images/bio.jpg");
@@ -81,11 +96,13 @@ void loginScreen(tgui::Gui& gui)
 	// Create the username edit box
 	tgui::EditBox::Ptr editBoxUsername(gui, "Username");
 	editBoxUsername->load("../TGUI/widgets/Black.conf");
+	//editBoxUsername->setText("");
 	editBoxUsername->setSize(400, 40);
 	editBoxUsername->setPosition(200, 230);
 
 	// Create the password edit box (we will copy the previously created edit box)
 	tgui::EditBox::Ptr editBoxPassword = gui.copy(editBoxUsername, "Password");
+	//editBoxPassword->setText("");
 	editBoxPassword->setPosition(200, 320);
 	editBoxPassword->setPasswordCharacter('*');
 
@@ -124,35 +141,35 @@ void loginScreen(tgui::Gui& gui)
 	labelStatus2->setText(loginMess2);
 }
 
-int getGameLevel(MYSQL *connection, std::string user)
-{
-	int level = 0;
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
+//int getGameLevel(MYSQL *connection, std::string user)
+//{
+//	int level = 0;
+//	MYSQL_RES *result;
+//	MYSQL_ROW row;
+//	MYSQL_FIELD *field;
+//
+//	std::string command = "SELECT * FROM Users WHERE UserName = '" + user + "'";
+//	
+//	mysql_query(connection, command.c_str());
+//	result = mysql_store_result(connection);
+//	if ((row = mysql_fetch_row(result)))
+//	{
+//		int i = 0;
+//		//Grabs all fields from Users table and traverses them
+//		while ((field = mysql_fetch_field(result)))
+//		{
+//			std::string temp = field->name;
+//			if (temp.compare("GameLevel") == 0){
+//				std::string levelVal = row[i];
+//				level = atoi(levelVal.c_str());
+//			}
+//			i++;
+//		}
+//	}
+//	return level;
+//}
 
-	std::string command = "SELECT * FROM Users WHERE UserName = '" + user + "'";
-	
-	mysql_query(connection, command.c_str());
-	result = mysql_store_result(connection);
-	if ((row = mysql_fetch_row(result)))
-	{
-		int i = 0;
-		//Grabs all fields from Users table and traverses them
-		while ((field = mysql_fetch_field(result)))
-		{
-			std::string temp = field->name;
-			if (temp.compare("GameLevel") == 0){
-				std::string levelVal = row[i];
-				level = atoi(levelVal.c_str());
-			}
-			i++;
-		}
-	}
-	return level;
-}
-
-void advanceLevel(int currentLevel, MYSQL *connection, std::string user)
+/*void advanceLevel(int currentLevel, MYSQL *connection, std::string user)
 {
 	std::string str_currentLevel = std::to_string(currentLevel);
 	// Update database, advance game level if applicable (if game level is not already greater than 1)
@@ -189,7 +206,7 @@ void advanceLevel(int currentLevel, MYSQL *connection, std::string user)
 			i++;
 		}
 	}
-}
+}*/
 
 void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 {
@@ -270,19 +287,19 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 		spritesheet3->setCallbackId(5);
 		break;
 	case 4:
-		spritesheet1->load("../images/body.jpg");
+		spritesheet1->load("../images/body_done.jpg");
 		spritesheet1->setSize(200, 140);
 		spritesheet1->setPosition(25, 180);
 		spritesheet1->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet1->setCallbackId(3);
 
-		spritesheet2->load("../images/skeleton_edit.jpg");
+		spritesheet2->load("../images/skeleton_done.jpg");
 		spritesheet2->setSize(200, 140);
 		spritesheet2->setPosition(300, 180);
 		spritesheet2->bindCallback(tgui::Button::LeftMouseClicked);
 		spritesheet2->setCallbackId(4);
 
-		spritesheet3->load("../images/cell.gif");
+		spritesheet3->load("../images/cell_done.jpg");
 		spritesheet3->setSize(200, 140);
 		spritesheet3->setPosition(575, 180);
 		spritesheet3->bindCallback(tgui::Button::LeftMouseClicked);
@@ -491,7 +508,7 @@ void lockedScreen(tgui::Gui& gui)
 	//levelSelectionScreen(gui, level);
 }
 
-void teacherScreen(tgui::Gui& gui, MYSQL *connection)
+void teacherScreen(tgui::Gui& gui, sf::Packet p)
 {
 	// Create the background image
 	tgui::Picture::Ptr picture(gui);
@@ -517,27 +534,37 @@ void teacherScreen(tgui::Gui& gui, MYSQL *connection)
 	button->bindCallback(tgui::Button::LeftMouseClicked);
 	button->setCallbackId(100);
 
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
+	sf::Uint32 size;
+	p >> size;
+	for (sf::Uint32 i = 0; i < size; i++)
+	{
+		std::string user;
+		p >> user;
+		listBox->addItem(user);
+	}
+
+
+	//MYSQL_RES *result;
+	//MYSQL_ROW row;
+	//MYSQL_FIELD *field;
 
 	//std::cout << users << std::endl;
 
 	//std::string command = "SELECT * FROM Users";
-	std::string command = "SELECT `Username` FROM `Users`";
-	mysql_query(connection, command.c_str());
-	result = mysql_store_result(connection);
+	//std::string command = "SELECT `Username` FROM `Users`";
+	//mysql_query(connection, command.c_str());
+	//result = mysql_store_result(connection);
 	//field = mysql_fetch_field(result);
 
-	while ((row = mysql_fetch_row(result)) != NULL)
+/*	while ((row = mysql_fetch_row(result)) != NULL)
 	{
 		std::string username = row[0];
 		std::cout << username << std::endl;
 		listBox->addItem(username);
-	}
+	}*/
 }
 
-void deleteUser(tgui::Gui& gui, MYSQL *connection)
+/*void deleteUser(tgui::Gui& gui, MYSQL *connection)
 {
 	tgui::ListBox::Ptr temp = gui.get("userbox");
 	std::string name = temp->getSelectedItem();
@@ -551,7 +578,7 @@ void deleteUser(tgui::Gui& gui, MYSQL *connection)
 	result = mysql_store_result(connection);
 
 	temp->removeItem(name);
-}
+}*/
 
 /*
 *  Helper Method for making the "Combos" AKA "pull-down" menu selectors.  This method will create the combo and
@@ -651,11 +678,12 @@ void level1(tgui::Gui& gui)
 *  @param progress - Keeps track of the progress bar and updates according to correctness and score
 */
 //void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
-void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress, MYSQL *connection, std::string user)
+bool helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
 {
 	//tgui::LoadingBar::Ptr progress = gui.get("skinProgress");
 	tgui::ComboBox::Ptr temp = gui.get(bodyPart);
 	int checkAnswer = temp->getSelectedItemIndex();
+	bool correct = false;
 
 	if (checkAnswer == correctAnswer)
 	{
@@ -663,16 +691,19 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		correct = true;
 	}
 	else
+	{
 		temp->setTextColor(sf::Color::Red);
-
+		correct = false;
+	}
+		
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
 		celebration();
-		advanceLevel(1, connection, user);
-		
+
 		gui.remove(gui.get("SubmitButton"));
 
 		// Create the done button
@@ -684,6 +715,11 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(12);
 	}
+	
+	if (correct == true)
+		return true;
+	else
+		return false;
 }
 /*
 *  This method will check for correctness of the user's input for level 1.  This method is a callback handler
@@ -691,7 +727,7 @@ void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 *    as well as update the progress bar for the skin level
 */
 //void level1check(tgui::Gui& gui)
-void level1check(tgui::Gui& gui, MYSQL *connection, std::string user)
+bool level1check(tgui::Gui& gui)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("skinProgress"); //get progress info from skin level
 	progress->setValue(0); //Reinitialize to 0 in order to prevent double-points
@@ -705,13 +741,31 @@ void level1check(tgui::Gui& gui, MYSQL *connection, std::string user)
 	//helpCheckLevel(gui, "Arm", 4, progress);
 	//helpCheckLevel(gui, "Hand", 6, progress);
 
-	helpCheckLevel(gui, "Head", 3, progress, connection, user);
-	helpCheckLevel(gui, "Shoulder", 2, progress, connection, user);
-	helpCheckLevel(gui, "Knee", 1, progress, connection, user);
-	helpCheckLevel(gui, "Toes", 0, progress, connection, user);
-	helpCheckLevel(gui, "Neck", 5, progress, connection, user);
-	helpCheckLevel(gui, "Arm", 4, progress, connection, user);
-	helpCheckLevel(gui, "Hand", 6, progress, connection, user);
+	int count = 0;
+
+	if (helpCheckLevel(gui, "Head", 3, progress))
+		count++;
+	if (helpCheckLevel(gui, "Shoulder", 2, progress))
+		count++;
+	if (helpCheckLevel(gui, "Knee", 1, progress))
+		count++;
+	if (helpCheckLevel(gui, "Toes", 0, progress))
+		count++;
+	if (helpCheckLevel(gui, "Neck", 5, progress))
+		count++;
+	if (helpCheckLevel(gui, "Arm", 4, progress))
+		count++;
+	if (helpCheckLevel(gui, "Hand", 6, progress))
+		count++;
+
+	if (count == 7)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void level2(tgui::Gui& gui){
@@ -838,10 +892,12 @@ void level2(tgui::Gui& gui){
 }
 
 //void level2check(tgui::Gui& gui)
-void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
+bool level2check(tgui::Gui& gui)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("boneProgress");
 	progress->setValue(0);
+
+	int count = 0;
 
 	tgui::ComboBox::Ptr temp = gui.get("Femur");
 	int test = temp->getSelectedItemIndex();
@@ -852,6 +908,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -864,6 +921,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -876,6 +934,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -888,6 +947,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -900,6 +960,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -912,6 +973,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -924,6 +986,7 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		int val = progress->getValue();
 		val = val + 100 / 7;
 		progress->setValue(val);
+		count++;
 	}
 	else
 		temp->setTextColor(sf::Color::Red);
@@ -932,7 +995,6 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 	{
 		progress->setValue(100);
 		celebration();
-		advanceLevel(2, connection, user);
 
 		gui.remove(gui.get("SubmitButton"));
 
@@ -944,9 +1006,10 @@ void level2check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
 		nextButton->setCallbackId(22);
-
-		
+		return true;
 	}
+	else
+		return false;
 }
 
 void level3(tgui::Gui& gui)
@@ -1045,7 +1108,7 @@ void level3(tgui::Gui& gui)
 }
 
 //void level3check(tgui::Gui& gui)
-void level3check(tgui::Gui& gui, MYSQL *connection, std::string user)
+bool level3check(tgui::Gui& gui)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("cellProgress");
 	progress->setValue(0);
@@ -1141,7 +1204,6 @@ void level3check(tgui::Gui& gui, MYSQL *connection, std::string user)
 	{
 		progress->setValue(100);
 		celebration();
-		advanceLevel(3, connection, user);
 
 		gui.remove(gui.get("level3Done"));
 
@@ -1152,17 +1214,12 @@ void level3check(tgui::Gui& gui, MYSQL *connection, std::string user)
 		nextButton->setPosition(270, 500);
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
-		nextButton->setCallbackId(32);		
+		nextButton->setCallbackId(32);
+		return true;
 	}
+	else
+		return false;
 }
-
-//void levelComplete(int levelNumber)
-//{
-
-// MySQL calls to update user progress 
-
-// Level Complete Animation 
-//}
 
 int main()
 {
@@ -1178,34 +1235,25 @@ int main()
 
 	if (socket2.connect(Address1, PORT) == sf::Socket::Done)
 	{
-		std::cout << "Connected to the SFML server \n" << std::endl;;
-		//sf::Packet pack;
-		//pack << "MYSQL" << "Login" << "tobin" << "tobin123";
-		//socket2.send(pack);
+		std::cout << "Connected to the SFML server \n" << std::endl;
 	}
 
 	else
 	{
 		std::cout << "Could not establish connection \n" << std::endl;
 		std::cout << "Program will terminate \n" << std::endl;
+		exit(0);
 	}
 
 	// Load the widgets
 	loginScreen(gui);
 
+	// Struct for keeping track of user data
+	PackStruct tobeSent;
+
+
 	int level = 0;
 	std::string user;
-
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
-	MYSQL *connection, mysql;	
-
-	//initialize mysql connection
-	mysql_init(&mysql);
-
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
-	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	// Main loop
 	while (window.isOpen())
@@ -1234,7 +1282,6 @@ int main()
 				std::string username = editBoxUsername->getText();
 				std::string password = editBoxPassword->getText();
 
-				PackStruct tobeSent;
 				tobeSent.connType = "LOGIN";
 				tobeSent.userName = username;
 				tobeSent.password = password;
@@ -1259,10 +1306,24 @@ int main()
 						loginMess2.clear();
 						loginMessage = "Logged in successfully!";
 						std::cout << loginMessage << std::endl;
-						// This levelNum int will come from the database 
+
 						if (tobeSent.admin == true)
 						{
-							teacherScreen(gui, connection);
+							pack.clear();
+
+							tobeSent.connType = "USERS";
+			
+							sf::Packet pack;
+							pack << tobeSent;
+
+							if (socket2.send(pack) == sf::Socket::Done)
+								std::cout << "Successfully sent packet \n" << std::endl;
+
+							pack.clear();
+							if (socket2.receive(pack) == sf::Socket::Done)
+							{
+								teacherScreen(gui, pack);
+							}
 						}
 						else
 						{
@@ -1276,10 +1337,10 @@ int main()
 						loginMess2.clear();
 						loginMessage = "Incorrect username and/or password.";
 						loginMess2 = "Please try again...";
+						tobeSent = clearStruct(tobeSent);
 						std::cout << loginMessage << std::endl;
 						loginScreen(gui);
 					}
-					//	mysql_free_result(result);
 				}
 			}
 
@@ -1296,38 +1357,42 @@ int main()
 				// Do not allow user to be created with BLANK username or password
 				if (username != "" || password != "")
 				{
-					//Check if user exists
-					std::string command = "SELECT * FROM Users WHERE Username = '" + username + "'";
 
-					mysql_query(connection, command.c_str());
-					result = mysql_store_result(connection);
+					//PackStruct tobeSent;
+					tobeSent.connType = "NEWACCT";
+					tobeSent.userName = username;
+					tobeSent.password = password;
 
-					if (!(row = mysql_fetch_row(result)))
+					sf::Packet pack;
+					pack << tobeSent;
+
+					if (socket2.send(pack) == sf::Socket::Done)
+						std::cout << "Successfully sent packet \n" << std::endl;
+
+					pack.clear();
+
+					if (socket2.receive(pack) == sf::Socket::Done)
 					{
-						std::string command = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
-						mysql_query(connection, command.c_str());
+						pack >> tobeSent;
 
-						//std::string command2 = "INSERT INTO Game (Username, GameLevel) VALUES ('" + username + "', '1')";
-						//std::string command2 = "INSERT INTO Game (Username) VALUES ('" + username + "')";
-						//mysql_query(connection, command2.c_str());
-						
-						loginMessage.clear();
-						loginMess2.clear();
-						loginMessage = "Creating account...";
-						std::cout << loginMessage << std::endl;
-						levelSelectionScreen(gui, 1); // Start at Level=1 when creating new user
+						if (tobeSent.alreadyExist == false)
+						{
+							loginMessage.clear();
+							loginMess2.clear();
+							loginMessage = "Creating account...";
+							std::cout << loginMessage << std::endl;
+							levelSelectionScreen(gui, 1); // Start at Level=1 when creating new user
+						}
+						else
+						{
+							loginMessage.clear();
+							loginMess2.clear();
+							loginMessage = "This username already exists.";
+							loginMess2 = "Please try again...";
+							std::cout << loginMessage << std::endl;
+							loginScreen(gui);
+						}
 					}
-					else
-					{
-						loginMessage.clear();
-						loginMess2.clear();
-						loginMessage = "This username already exists.";
-						loginMess2 = "Please try again...";
-						std::cout << loginMessage << std::endl;
-						loginScreen(gui);
-					}
-
-					mysql_free_result(result);
 				}
 				else
 				{
@@ -1369,65 +1434,182 @@ int main()
 			{
 				loginMessage.clear();
 				loginMess2.clear();
+				gui.removeAllWidgets();
+				tobeSent = clearStruct(tobeSent);
 				loginScreen(gui);
 			}
 
 			// Generated from "Exit" button on level selection screen
 			if (callback.id == 9)
 			{
-				mysql_close(connection);
 				window.close();
 			}
 
 			// Back to LevelSelectionScreen from Level 1
 			if (callback.id == 10)
 			{
-				level = getGameLevel(connection, user);
-				levelSelectionScreen(gui, level);
+				sf::Packet pack;
+				tobeSent.connType = "GAMELEVEL";
+				pack << tobeSent;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
+				{
+					pack >> tobeSent;
+					level = tobeSent.level;
+					levelSelectionScreen(gui, level);
+				}
 			}
 
 			if (callback.id == 11)
 			{
-				//level1check(gui);
-				level1check(gui, connection, user);
+				if (level1check(gui))
+				{
+					sf::Packet pack;
+					tobeSent.connType = "ADVANCELEVEL1";
+					pack << tobeSent;
+
+					if (socket2.send(pack) == sf::Socket::Done)
+						std::cout << "Successfully sent packet \n" << std::endl;
+
+					pack.clear();
+
+					if (socket2.receive(pack) == sf::Socket::Done)
+					{
+						pack >> tobeSent;
+						level = tobeSent.level;
+						levelSelectionScreen(gui, level);
+					}
+				}
 			}
 
 			if (callback.id == 12)
 			{
-				//levelSelectionScreen(gui, 2);
-				level = getGameLevel(connection, user);
-				levelSelectionScreen(gui, level);
+				sf::Packet pack;
+				tobeSent.connType = "GAMELEVEL";
+				pack << tobeSent;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
+				{
+					pack >> tobeSent;
+					level = tobeSent.level;
+					levelSelectionScreen(gui, level);
+				}
 			}
 
 			if (callback.id == 21)
 			{
-				//level2check(gui);
-				level2check(gui, connection, user);
+
+				if (level2check(gui))
+				{
+					sf::Packet pack;
+					tobeSent.connType = "ADVANCELEVEL2";
+					pack << tobeSent;
+
+					if (socket2.send(pack) == sf::Socket::Done)
+						std::cout << "Successfully sent packet \n" << std::endl;
+
+					pack.clear();
+
+					if (socket2.receive(pack) == sf::Socket::Done)
+					{
+						pack >> tobeSent;
+						level = tobeSent.level;
+						levelSelectionScreen(gui, level);
+					}
+				}
 			}
 
 			if (callback.id == 22)
 			{
-				//levelSelectionScreen(gui, 3);
-				level = getGameLevel(connection, user);
-				levelSelectionScreen(gui, level);
+				sf::Packet pack;
+				tobeSent.connType = "GAMELEVEL";
+				pack << tobeSent;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
+				{
+					pack >> tobeSent;
+					level = tobeSent.level;
+					levelSelectionScreen(gui, level);
+				}
 			}
 
 			if (callback.id == 31)
 			{
-				//level3check(gui);
-				level3check(gui, connection, user);
+				if (level3check(gui))
+				{
+					sf::Packet pack;
+					tobeSent.connType = "ADVANCELEVEL3";
+					pack << tobeSent;
+
+					if (socket2.send(pack) == sf::Socket::Done)
+						std::cout << "Successfully sent packet \n" << std::endl;
+
+					pack.clear();
+
+					if (socket2.receive(pack) == sf::Socket::Done)
+					{
+						pack >> tobeSent;
+						level = tobeSent.level;
+						levelSelectionScreen(gui, level);
+					}
+				}
 			}
 
 			if (callback.id == 32)
 			{
-				//levelSelectionScreen(gui, 4);
-				level = getGameLevel(connection, user);
-				levelSelectionScreen(gui, level);
+				sf::Packet pack;
+				tobeSent.connType = "GAMELEVEL";
+				pack << tobeSent;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
+				{
+					pack >> tobeSent;
+					level = tobeSent.level;
+					levelSelectionScreen(gui, level);
+				}
 			}
 
 			if (callback.id == 100)
 			{
-				deleteUser(gui, connection);
+				
+				tgui::ListBox::Ptr temp = gui.get("userbox");
+				std::string name = temp->getSelectedItem();
+
+				PackStruct deleteStruct;
+				deleteStruct.connType = "DELETE";
+				deleteStruct.userName = name;
+
+				sf::Packet pack;
+				
+				pack << deleteStruct;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				temp->removeItem(name);
+
 			}
 
 			if (callback.id == 666)
@@ -1441,7 +1623,6 @@ int main()
 		gui.draw();
 		window.display();
 	}
-	mysql_close(connection);
 
 	return EXIT_SUCCESS;
 }
