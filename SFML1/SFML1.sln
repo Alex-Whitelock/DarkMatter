@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SFML1", "SFML1\SFML1.vcxproj", "{29E8E003-D3FE-4FAA-A132-4DE3D0AC4CF7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SFML_Server", "SFML_Server\SFML_Server.vcxproj", "{6A0BC283-D691-4769-9FA1-7D84ECFB3591}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -15,6 +17,10 @@ Global
 		{29E8E003-D3FE-4FAA-A132-4DE3D0AC4CF7}.Debug|Win32.Build.0 = Debug|Win32
 		{29E8E003-D3FE-4FAA-A132-4DE3D0AC4CF7}.Release|Win32.ActiveCfg = Release|Win32
 		{29E8E003-D3FE-4FAA-A132-4DE3D0AC4CF7}.Release|Win32.Build.0 = Release|Win32
+		{6A0BC283-D691-4769-9FA1-7D84ECFB3591}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6A0BC283-D691-4769-9FA1-7D84ECFB3591}.Debug|Win32.Build.0 = Debug|Win32
+		{6A0BC283-D691-4769-9FA1-7D84ECFB3591}.Release|Win32.ActiveCfg = Release|Win32
+		{6A0BC283-D691-4769-9FA1-7D84ECFB3591}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

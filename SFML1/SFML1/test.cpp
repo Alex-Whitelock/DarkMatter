@@ -5,6 +5,7 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include <SFML\Audio\Music.hpp>
+#include <SFML\Network.hpp>
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
 #include <iostream>
@@ -17,6 +18,33 @@
 // Message that will be displayed on login screen depending on login status
 std::string loginMessage;
 std::string loginMess2;
+
+sf::TcpSocket socket2;
+const unsigned short PORT = 5000;
+//const std::string IPADDRESS("155.98.108.1");
+
+struct PackStruct
+{
+	std::string connType;
+	std::string userName;
+	std::string password;
+	bool admin;
+	bool authorized;
+	int level;
+	//sf::Uint8   Age;
+	//std::string Name;
+	//float       Height;
+};
+
+sf::Packet& operator >>(sf::Packet& Packet, PackStruct& P)
+{
+	return Packet >> P.connType >> P.userName >> P.password >> P.admin >> P.authorized >> P.level;
+}
+
+sf::Packet& operator <<(sf::Packet& Packet, const PackStruct& P)
+{
+	return Packet << P.connType << P.userName << P.password << P.admin << P.authorized << P.level;
+}
 
 /** We need this to easily convert between pixel and real-world coordinates*/
 static const float SCALE = 30.f;
@@ -1087,6 +1115,23 @@ int main()
 	// Load the font (you should check the return value to make sure that it is loaded)
 	gui.setGlobalFont("../TGUI/fonts/DejaVuSans.ttf");
 
+	// Establish connection to the SFML server
+	sf::IpAddress Address1 = sf::IpAddress::getLocalAddress();
+
+	if (socket2.connect(Address1, PORT) == sf::Socket::Done)
+	{
+		std::cout << "Connected to the SFML server \n" << std::endl;;
+		//sf::Packet pack;
+		//pack << "MYSQL" << "Login" << "tobin" << "tobin123";
+		//socket2.send(pack);
+	}
+
+	else
+	{
+		std::cout << "Could not establish connection \n" << std::endl;
+		std::cout << "Program will terminate \n" << std::endl;
+	}
+
 	// Load the widgets
 	loginScreen(gui);
 
@@ -1129,57 +1174,47 @@ int main()
 				tgui::EditBox::Ptr editBoxPassword = gui.get("Password");
 
 				std::string username = editBoxUsername->getText();
-				std::string password = editBoxPassword->getText();				
-				std::string command = "SELECT * FROM Users WHERE UserName = '" + username + "' AND Password = '" + password + "'";
+				std::string password = editBoxPassword->getText();
 
-				mysql_query(connection, command.c_str());
-				result = mysql_store_result(connection);
-				if ((row = mysql_fetch_row(result)))
+				PackStruct tobeSent;
+				tobeSent.connType = "LOGIN";
+				tobeSent.userName = username;
+				tobeSent.password = password;
+
+				sf::Packet pack;
+				pack << tobeSent;
+
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
 				{
-					int i = 0;
-					bool admin = false;
-					user = username;
+					pack >> tobeSent;
 
-					//Grabs all fields from Users table and traverses them
-					while ((field = mysql_fetch_field(result)))
+					if (tobeSent.authorized == true)
 					{
-						std::cout << field->name << ": " << row[i] << std::endl;						
-						std::string temp = field->name;
-						if (temp.compare("Admin") == 0){
-							std::string admVal = row[i];
-							admin = admVal.compare("1") == 0;
-						}
-						if (temp.compare("GameLevel") == 0){
-							std::string levelVal = row[i];
-							level = atoi(levelVal.c_str());
-						}
-						i++;
+						std::cout << "Your user level is" << std::endl;
+						user = tobeSent.userName;
+						loginMessage.clear();
+						loginMess2.clear();
+						loginMessage = "Logged in successfully!";
+						std::cout << loginMessage << std::endl;
+						// This levelNum int will come from the database 
+						levelSelectionScreen(gui, tobeSent.level);
 					}
-
-					if (admin){
-						std::cout << "User " << username << " is admin" << std::endl;
+					else
+					{
+						loginMessage.clear();
+						loginMess2.clear();
+						loginMessage = "Incorrect username and/or password.";
+						loginMess2 = "Please try again...";
+						std::cout << loginMessage << std::endl;
+						loginScreen(gui);
 					}
-					else{
-						std::cout << "User " << username << " is not admin" << std::endl;
-					}
-
-					loginMessage.clear();
-					loginMess2.clear();
-					loginMessage = "Logged in successfully!";
-					std::cout << loginMessage << std::endl;
-					// This levelNum int will come from the database 
-					levelSelectionScreen(gui, level);
+					//	mysql_free_result(result);
 				}
-				else
-				{
-					loginMessage.clear();
-					loginMess2.clear();
-					loginMessage = "Incorrect username and/or password.";
-					loginMess2 = "Please try again...";
-					std::cout << loginMessage << std::endl;
-					loginScreen(gui);
-				}
-				mysql_free_result(result);
 			}
 
 			// New Account Button
