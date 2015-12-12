@@ -593,19 +593,30 @@ void teacherScreen(tgui::Gui& gui, sf::Packet p)
 *  @param xPos - x position of the combo.  The combo should appear at the tail of the arrow on the background picture
 *  @param yPos - y position of the combo on the screen.
 */
-void makeComboHelper(tgui::Gui& gui, std::string bodyPart, float xPos, float yPos)
+void makeComboHelper(tgui::Gui& gui, int level, std::string bodyPart, float xPos, float yPos)
 {
 	tgui::ComboBox::Ptr Combo(gui, bodyPart);
 	Combo->load("../TGUI/widgets/Black.conf");
 	Combo->setSize(120, 21);
 	Combo->setPosition(xPos, yPos);
-	Combo->addItem("Toes");
-	Combo->addItem("Knee");
-	Combo->addItem("Shoulder");
-	Combo->addItem("Head");
-	Combo->addItem("Arm");
-	Combo->addItem("Neck");
-	Combo->addItem("Hand");
+	if (level == 1){
+		Combo->addItem("Toes");
+		Combo->addItem("Knee");
+		Combo->addItem("Shoulder");
+		Combo->addItem("Head");
+		Combo->addItem("Arm");
+		Combo->addItem("Neck");
+		Combo->addItem("Hand");
+	}
+	else if (level == 2){
+		Combo->addItem("Femur");
+		Combo->addItem("Cranium");
+		Combo->addItem("Pelvis");
+		Combo->addItem("Humerus");
+		Combo->addItem("Carpals");
+		Combo->addItem("Patella");
+		Combo->addItem("Vertebrae");
+	}
 }
 
 /*
@@ -639,14 +650,15 @@ void level1(tgui::Gui& gui)
 	descriptionLabel->setPosition(10, 10);
 
 
-	//Make the pull-down selectors for each body part
-	makeComboHelper(gui, "Head", 135, 78);
-	makeComboHelper(gui, "Shoulder", 105, 215);
-	makeComboHelper(gui, "Knee", 120, 445);
-	makeComboHelper(gui, "Toes", 95, 530);
-	makeComboHelper(gui, "Neck", 540, 190);
-	makeComboHelper(gui, "Arm", 570, 290);
-	makeComboHelper(gui, "Hand", 585, 365);
+	// Make the pull-down selectors for each body part
+	int level = 1; // first level is skin level
+	makeComboHelper(gui, level, "Head", 135, 78);
+	makeComboHelper(gui, level, "Shoulder", 105, 215);
+	makeComboHelper(gui, level, "Knee", 120, 445);
+	makeComboHelper(gui, level, "Toes", 95, 530);
+	makeComboHelper(gui, level, "Neck", 540, 190);
+	makeComboHelper(gui, level, "Arm", 570, 290);
+	makeComboHelper(gui, level, "Hand", 585, 365);
 
 	// Create SubmitButton button
 	tgui::Button::Ptr SubmitButton(gui, "SubmitButton");
@@ -658,6 +670,7 @@ void level1(tgui::Gui& gui)
 	SubmitButton->setCallbackId(11);
 
 	// Create Secret button
+	/* Secret Phase coming in version 2.0, pre-purchase DLC at your local Circuit City!! */
 	tgui::Button::Ptr SecretPhase(gui);
 	SecretPhase->load("../TGUI/widgets/Black.conf");
 	SecretPhase->setSize(400, 150);
@@ -672,7 +685,6 @@ void level1(tgui::Gui& gui)
 	progressBarLabel->setText("Progress");
 	progressBarLabel->setTextColor(sf::Color::Black);
 	progressBarLabel->setPosition(585, 55);
-
 	tgui::LoadingBar::Ptr progressBar(gui, "skinProgress");
 	progressBar->load("../TGUI/widgets/Black.conf");
 	progressBar->setPosition(530, 85);
@@ -689,15 +701,21 @@ void level1(tgui::Gui& gui)
 *  @param correctAnswer - int containing the correct answer for the pulldown.  To be compared with input(s)
 *  @param progress - Keeps track of the progress bar and updates according to correctness and score
 */
-//void helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
-bool helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress)
+
+bool helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgui::LoadingBar::Ptr progress, int callbackID)
 {
-	//tgui::LoadingBar::Ptr progress = gui.get("skinProgress");
+	// Copy the level type into a temp and get the correct answer (for levels 1 and 2)
 	tgui::ComboBox::Ptr temp = gui.get(bodyPart);
+	// Get player's answer
 	int checkAnswer = temp->getSelectedItemIndex();
+	// Boolean return value
 	bool correct = false;
 
-	if (checkAnswer == correctAnswer)
+	// Check the correctness of the player's selection
+	if (checkAnswer == -1){ // If no selection has been made, don't change word color
+		return false;
+	}
+	else if (checkAnswer == correctAnswer)
 	{
 		temp->setTextColor(sf::Color::Green);
 		int val = progress->getValue();
@@ -710,7 +728,8 @@ bool helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		temp->setTextColor(sf::Color::Red);
 		correct = false;
 	}
-		
+
+	// Update Progress Bar, Complete level if necessary
 	if (progress->getValue() == 98)
 	{
 		progress->setValue(100);
@@ -725,9 +744,9 @@ bool helpCheckLevel(tgui::Gui& gui, std::string bodyPart, int correctAnswer, tgu
 		nextButton->setPosition(530, 520);
 		nextButton->setText("Next");
 		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
-		nextButton->setCallbackId(12);
+		nextButton->setCallbackId(callbackID);
 	}
-	
+	// Set Return Value
 	if (correct == true)
 		return true;
 	else
@@ -744,32 +763,24 @@ bool level1check(tgui::Gui& gui)
 	tgui::LoadingBar::Ptr progress = gui.get("skinProgress"); //get progress info from skin level
 	progress->setValue(0); //Reinitialize to 0 in order to prevent double-points
 
-	//Use Helper to check each pull-down option for correctness
-	//helpCheckLevel(gui, "Head", 3, progress);
-	//helpCheckLevel(gui, "Shoulder", 2, progress);
-	//helpCheckLevel(gui, "Knee", 1, progress);
-	//helpCheckLevel(gui, "Toes", 0, progress);
-	//helpCheckLevel(gui, "Neck", 5, progress);
-	//helpCheckLevel(gui, "Arm", 4, progress);
-	//helpCheckLevel(gui, "Hand", 6, progress);
-
 	int count = 0;
+	int callbackID = 12;
+	if (helpCheckLevel(gui, "Head", 3, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Shoulder", 2, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Knee", 1, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Toes", 0, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Neck", 5, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Arm", 4, progress, callbackID))
+		count++;
+	if (helpCheckLevel(gui, "Hand", 6, progress, callbackID))
+		count++;
 
-	if (helpCheckLevel(gui, "Head", 3, progress))
-		count++;
-	if (helpCheckLevel(gui, "Shoulder", 2, progress))
-		count++;
-	if (helpCheckLevel(gui, "Knee", 1, progress))
-		count++;
-	if (helpCheckLevel(gui, "Toes", 0, progress))
-		count++;
-	if (helpCheckLevel(gui, "Neck", 5, progress))
-		count++;
-	if (helpCheckLevel(gui, "Arm", 4, progress))
-		count++;
-	if (helpCheckLevel(gui, "Hand", 6, progress))
-		count++;
-
+	// If all combo boxes have the correct answer (player succeeded in beating level), return true otherwise return false.
 	if (count == 7)
 	{
 		return true;
@@ -780,6 +791,9 @@ bool level1check(tgui::Gui& gui)
 	}
 }
 
+/**
+*	
+*/
 void level2(tgui::Gui& gui){
 
 	// Create the background image
@@ -788,105 +802,24 @@ void level2(tgui::Gui& gui){
 	picture->setSize(800, 600);
 
 	// Create the Return to LevelSelectScreen button
-	tgui::Button::Ptr toLevelsButton(gui, "BackButton2");
+	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
 	toLevelsButton->load("../TGUI/widgets/Black.conf");
 	toLevelsButton->setSize(100, 50);
-	toLevelsButton->setPosition(10, 20);
+	toLevelsButton->setPosition(680, 20);
 	toLevelsButton->setText("Back");
 	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
 	toLevelsButton->setCallbackId(10);
 
-	// Create the Level description label
-	tgui::Label::Ptr descriptionLabel(gui);
-	descriptionLabel->setTextColor(sf::Color::Blue);
-	descriptionLabel->setTextSize(27);
-	descriptionLabel->setText("Use the\ndrop-down\nmenus to\nlabel\nthe bones.");
-	descriptionLabel->setPosition(620, 10);
 
-	// Drop down comboxes
-	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
-	comboBox1->load("../TGUI/widgets/Black.conf");
-	comboBox1->setSize(120, 21);
-	comboBox1->setPosition(150, 350);
-	comboBox1->addItem("Femur");
-	comboBox1->addItem("Cranium");
-	comboBox1->addItem("Pelvis");
-	comboBox1->addItem("Humerus");
-	comboBox1->addItem("Carpals");
-	comboBox1->addItem("Patella");
-	comboBox1->addItem("Vertebrae");
+	int level = 2; // Second level
+	makeComboHelper(gui, level, "Femur", 150, 350);
+	makeComboHelper(gui, level, "Cranium", 130, 27);
+	makeComboHelper(gui, level, "Pelvis", 559, 273);
+	makeComboHelper(gui, level, "Humerus", 52, 128);
+	makeComboHelper(gui, level, "Carpals", 65, 250);
+	makeComboHelper(gui, level, "Patella", 595, 400);
+	makeComboHelper(gui, level, "Vertebrae", 538, 178);
 
-	tgui::ComboBox::Ptr comboBox2(gui, "Cranium");
-	comboBox2->load("../TGUI/widgets/Black.conf");
-	comboBox2->setSize(120, 21);
-	comboBox2->setPosition(130, 27);
-	comboBox2->addItem("Femur");
-	comboBox2->addItem("Cranium");
-	comboBox2->addItem("Pelvis");
-	comboBox2->addItem("Humerus");
-	comboBox2->addItem("Carpals");
-	comboBox2->addItem("Patella");
-	comboBox2->addItem("Vertebrae");
-
-	tgui::ComboBox::Ptr comboBox3(gui, "Pelvis");
-	comboBox3->load("../TGUI/widgets/Black.conf");
-	comboBox3->setSize(120, 21);
-	comboBox3->setPosition(559, 273);
-	comboBox3->addItem("Femur");
-	comboBox3->addItem("Cranium");
-	comboBox3->addItem("Pelvis");
-	comboBox3->addItem("Humerus");
-	comboBox3->addItem("Carpals");
-	comboBox3->addItem("Patella");
-	comboBox3->addItem("Vertebrae");
-
-	tgui::ComboBox::Ptr comboBox4(gui, "Humerus");
-	comboBox4->load("../TGUI/widgets/Black.conf");
-	comboBox4->setSize(120, 21);
-	comboBox4->setPosition(52, 128);
-	comboBox4->addItem("Femur");
-	comboBox4->addItem("Cranium");
-	comboBox4->addItem("Pelvis");
-	comboBox4->addItem("Humerus");
-	comboBox4->addItem("Carpals");
-	comboBox4->addItem("Patella");
-	comboBox4->addItem("Vertebrae");
-
-	tgui::ComboBox::Ptr comboBox5(gui, "Carpals");
-	comboBox5->load("../TGUI/widgets/Black.conf");
-	comboBox5->setSize(120, 21);
-	comboBox5->setPosition(65, 250);
-	comboBox5->addItem("Femur");
-	comboBox5->addItem("Cranium");
-	comboBox5->addItem("Pelvis");
-	comboBox5->addItem("Humerus");
-	comboBox5->addItem("Carpals");
-	comboBox5->addItem("Patella");
-	comboBox5->addItem("Vertebrae");
-
-	tgui::ComboBox::Ptr comboBox6(gui, "Patella");
-	comboBox6->load("../TGUI/widgets/Black.conf");
-	comboBox6->setSize(120, 21);
-	comboBox6->setPosition(595, 400);
-	comboBox6->addItem("Femur");
-	comboBox6->addItem("Cranium");
-	comboBox6->addItem("Pelvis");
-	comboBox6->addItem("Humerus");
-	comboBox6->addItem("Carpals");
-	comboBox6->addItem("Patella");
-	comboBox6->addItem("Vertebrae");
-
-	tgui::ComboBox::Ptr comboBox7(gui, "Vertebrae");
-	comboBox7->load("../TGUI/widgets/Black.conf");
-	comboBox7->setSize(120, 21);
-	comboBox7->setPosition(538, 178);
-	comboBox7->addItem("Femur");
-	comboBox7->addItem("Cranium");
-	comboBox7->addItem("Pelvis");
-	comboBox7->addItem("Humerus");
-	comboBox7->addItem("Carpals");
-	comboBox7->addItem("Patella");
-	comboBox7->addItem("Vertebrae");
 
 	// Create Submit button
 	tgui::Button::Ptr button(gui, "SubmitButton");
@@ -901,7 +834,7 @@ void level2(tgui::Gui& gui){
 	tgui::Label::Ptr progressBarLabel(gui);
 	progressBarLabel->setText("Progress");
 	progressBarLabel->setTextColor(sf::Color::Black);
-	progressBarLabel->setPosition(595, 510);
+	progressBarLabel->setPosition(585, 510);
 
 	tgui::LoadingBar::Ptr progressBar(gui, "boneProgress");
 	progressBar->load("../TGUI/widgets/Black.conf");
@@ -910,125 +843,37 @@ void level2(tgui::Gui& gui){
 	progressBar->setValue(0);
 }
 
-//void level2check(tgui::Gui& gui)
 bool level2check(tgui::Gui& gui)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("boneProgress");
 	progress->setValue(0);
 
 	int count = 0;
-
-	tgui::ComboBox::Ptr temp = gui.get("Femur");
-	int test = temp->getSelectedItemIndex();
-	std::cout << test << std::endl;
-	if (test == 0)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	int callbackID = 22;
+	if (helpCheckLevel(gui, "Femur", 3, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Cranium");
-	test = temp->getSelectedItemIndex();
-	if (test == 1)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Cranium", 2, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Pelvis");
-	test = temp->getSelectedItemIndex();
-	if (test == 2)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Pelvis", 1, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Humerus");
-	test = temp->getSelectedItemIndex();
-	if (test == 3)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Humerus", 0, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Carpals");
-	test = temp->getSelectedItemIndex();
-	if (test == 4)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Carpals", 5, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Patella");
-	test = temp->getSelectedItemIndex();
-	if (test == 5)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Patella", 4, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
-
-	temp = gui.get("Vertebrae");
-	test = temp->getSelectedItemIndex();
-	if (test == 6)
-	{
-		temp->setTextColor(sf::Color::Green);
-		int val = progress->getValue();
-		val = val + 100 / 7;
-		progress->setValue(val);
+	if (helpCheckLevel(gui, "Vertebrae", 6, progress, callbackID))
 		count++;
-	}
-	else
-		temp->setTextColor(sf::Color::Red);
 
-	if (progress->getValue() == 98)
+	// If all combo boxes have the correct answer (player succeeded in beating level), return true otherwise return false.
+	if (count == 7)
 	{
-		progress->setValue(100);
-		celebration();
-
-		gui.remove(gui.get("SubmitButton"));
-
-		// Create the done button
-		tgui::Button::Ptr nextButton(gui);
-		nextButton->load("../TGUI/widgets/Black.conf");
-		nextButton->setSize(260, 60);
-		nextButton->setPosition(55, 520);
-		nextButton->setText("Next");
-		nextButton->bindCallback(tgui::Button::LeftMouseClicked);
-		nextButton->setCallbackId(22);
 		return true;
 	}
 	else
+	{
 		return false;
+	}
 }
 
 void level3(tgui::Gui& gui)
@@ -1257,7 +1102,8 @@ int main()
 	gui.setGlobalFont("../TGUI/fonts/DejaVuSans.ttf");
 
 	// Establish connection to the SFML server
-	sf::IpAddress Address1 = sf::IpAddress::getLocalAddress();
+
+	sf::IpAddress Address1 = "lab6-8";/*sf::IpAddress::getLocalAddress();*/
 
 	if (socket2.connect(Address1, PORT) == sf::Socket::Done)
 	{
