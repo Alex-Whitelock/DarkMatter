@@ -19,6 +19,9 @@
 std::string loginMessage;
 std::string loginMess2;
 
+/** We need this to easily convert between pixel and real-world coordinates*/
+static const float SCALE = 30.f;
+
 sf::TcpSocket socket2;
 const unsigned short PORT = 5000;
 //const std::string IPADDRESS("155.98.108.1");
@@ -56,9 +59,6 @@ sf::Packet& operator <<(sf::Packet& Packet, const PackStruct& P)
 {
 	return Packet << P.connType << P.userName << P.password << P.admin << P.authorized << P.level << P.alreadyExist;
 }
-
-/** We need this to easily convert between pixel and real-world coordinates*/
-static const float SCALE = 30.f;
 
 void loginScreen(tgui::Gui& gui)
 {
@@ -311,16 +311,20 @@ void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 
 	// Create Level Labels
 	tgui::Label::Ptr level1Label(gui);
-	level1Label->setText("Level 1");
-	level1Label->setPosition(65, 340);
+	level1Label->setTextColor(sf::Color::Green);
+	level1Label->setText("Body Level");
+	level1Label->setPosition(50, 335);
 
 	tgui::Label::Ptr level2label(gui);
-	level2label->setText("Level 2");
-	level2label->setPosition(340, 340);
+	level2label->setTextColor(sf::Color::Green);
+	level2label->setText("Bones Level");
+	level2label->setPosition(310, 335);
 
 	tgui::Label::Ptr level3label(gui);
-	level3label->setText("Level 3");
-	level3label->setPosition(615, 340);
+	level3label->setTextColor(sf::Color::Green);
+	level3label->setText("Cell Level");
+	level3label->setPosition(610, 335);
+
 
 	// Create the Return to Login Screen button
 	tgui::Button::Ptr toLoginButton(gui, "ToLogin");
@@ -619,13 +623,21 @@ void level1(tgui::Gui& gui)
 	picture->setSize(800, 600);
 
 	// Create the Return to LevelSelectScreen button
-	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	tgui::Button::Ptr toLevelsButton(gui, "BackButton1");
 	toLevelsButton->load("../TGUI/widgets/Black.conf");
 	toLevelsButton->setSize(100, 50);
-	toLevelsButton->setPosition(10, 20);
+	toLevelsButton->setPosition(20, 60);
 	toLevelsButton->setText("Back");
 	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
 	toLevelsButton->setCallbackId(10);
+
+	// Create the Level description label
+	tgui::Label::Ptr descriptionLabel(gui);
+	descriptionLabel->setTextColor(sf::Color::Blue);
+	descriptionLabel->setTextSize(22);
+	descriptionLabel->setText("Use the drop-down menus to label the body parts the arrows point to.");
+	descriptionLabel->setPosition(10, 10);
+
 
 	//Make the pull-down selectors for each body part
 	makeComboHelper(gui, "Head", 135, 78);
@@ -659,11 +671,11 @@ void level1(tgui::Gui& gui)
 	tgui::Label::Ptr progressBarLabel(gui);
 	progressBarLabel->setText("Progress");
 	progressBarLabel->setTextColor(sf::Color::Black);
-	progressBarLabel->setPosition(580, 10);
+	progressBarLabel->setPosition(585, 55);
 
 	tgui::LoadingBar::Ptr progressBar(gui, "skinProgress");
 	progressBar->load("../TGUI/widgets/Black.conf");
-	progressBar->setPosition(530, 50);
+	progressBar->setPosition(530, 85);
 	progressBar->setSize(250, 30);
 	progressBar->setValue(0);
 }
@@ -776,13 +788,20 @@ void level2(tgui::Gui& gui){
 	picture->setSize(800, 600);
 
 	// Create the Return to LevelSelectScreen button
-	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	tgui::Button::Ptr toLevelsButton(gui, "BackButton2");
 	toLevelsButton->load("../TGUI/widgets/Black.conf");
 	toLevelsButton->setSize(100, 50);
-	toLevelsButton->setPosition(680, 20);
+	toLevelsButton->setPosition(10, 20);
 	toLevelsButton->setText("Back");
 	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
 	toLevelsButton->setCallbackId(10);
+
+	// Create the Level description label
+	tgui::Label::Ptr descriptionLabel(gui);
+	descriptionLabel->setTextColor(sf::Color::Blue);
+	descriptionLabel->setTextSize(27);
+	descriptionLabel->setText("Use the\ndrop-down\nmenus to\nlabel\nthe bones.");
+	descriptionLabel->setPosition(620, 10);
 
 	// Drop down comboxes
 	tgui::ComboBox::Ptr comboBox1(gui, "Femur");
@@ -882,7 +901,7 @@ void level2(tgui::Gui& gui){
 	tgui::Label::Ptr progressBarLabel(gui);
 	progressBarLabel->setText("Progress");
 	progressBarLabel->setTextColor(sf::Color::Black);
-	progressBarLabel->setPosition(585, 510);
+	progressBarLabel->setPosition(595, 510);
 
 	tgui::LoadingBar::Ptr progressBar(gui, "boneProgress");
 	progressBar->load("../TGUI/widgets/Black.conf");
@@ -1020,13 +1039,32 @@ void level3(tgui::Gui& gui)
 	picture->setSize(800, 600);
 
 	// Create the Return to LevelSelectScreen button
-	tgui::Button::Ptr toLevelsButton(gui, "BackToLevelSelect");
+	tgui::Button::Ptr toLevelsButton(gui, "BackButton3");
 	toLevelsButton->load("../TGUI/widgets/Black.conf");
 	toLevelsButton->setSize(100, 50);
-	toLevelsButton->setPosition(10, 20);
+	toLevelsButton->setPosition(610, 140);
 	toLevelsButton->setText("Back");
 	toLevelsButton->bindCallback(tgui::Button::LeftMouseClicked);
 	toLevelsButton->setCallbackId(10);
+
+	// Create the Level description label
+	tgui::Label::Ptr descriptionLabel(gui);
+	descriptionLabel->setTextColor(sf::Color::Blue);
+	descriptionLabel->setTextSize(27);
+	descriptionLabel->setText("Select the best answer from choices for each cell part.");
+	descriptionLabel->setPosition(30, 10);
+
+	// Create the progressBar label
+	tgui::Label::Ptr progressBarLabel(gui);
+	progressBarLabel->setText("Progress");
+	progressBarLabel->setTextColor(sf::Color::Black);
+	progressBarLabel->setPosition(590, 60);
+
+	tgui::LoadingBar::Ptr progressBar(gui, "cellProgress");
+	progressBar->load("../TGUI/widgets/Black.conf");
+	progressBar->setPosition(530, 100);
+	progressBar->setSize(250, 30);
+	progressBar->setValue(0);
 
 	// Create the submit button
 	tgui::Button::Ptr submitButton(gui, "level3Done");
@@ -1039,8 +1077,8 @@ void level3(tgui::Gui& gui)
 
 	tgui::Tab::Ptr nucleusTab(gui, "nucleus");
 	nucleusTab->load("../TGUI/widgets/Black.conf");
-	nucleusTab->setPosition(5, 240);
 	nucleusTab->setTabHeight(20);
+	nucleusTab->setPosition(5, 240);
 	nucleusTab->add("nucleus");
 	nucleusTab->add("mitochondria");
 	nucleusTab->add("ribosome");
@@ -1093,18 +1131,6 @@ void level3(tgui::Gui& gui)
 	lysosomeTab->add("golgi");
 	lysosomeTab->add("lysosome");
 	lysosomeTab->add("endoplasmic reticulum");
-
-	// Create the progressBar label
-	tgui::Label::Ptr progressBarLabel(gui);
-	progressBarLabel->setText("Progress");
-	progressBarLabel->setTextColor(sf::Color::Black);
-	progressBarLabel->setPosition(580, 10);
-
-	tgui::LoadingBar::Ptr progressBar(gui, "cellProgress");
-	progressBar->load("../TGUI/widgets/Black.conf");
-	progressBar->setPosition(530, 50);
-	progressBar->setSize(250, 30);
-	progressBar->setValue(0);
 }
 
 //void level3check(tgui::Gui& gui)
@@ -1237,7 +1263,6 @@ int main()
 	{
 		std::cout << "Connected to the SFML server \n" << std::endl;
 	}
-
 	else
 	{
 		std::cout << "Could not establish connection \n" << std::endl;
@@ -1250,8 +1275,7 @@ int main()
 
 	// Struct for keeping track of user data
 	PackStruct tobeSent;
-
-
+	
 	int level = 0;
 	std::string user;
 
