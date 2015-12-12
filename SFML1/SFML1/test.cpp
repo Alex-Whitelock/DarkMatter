@@ -11,6 +11,10 @@
 #include <iostream>
 #include <string>
 #include <mysql.h>
+#include <fstream>
+#include <sstream>
+using namespace std;
+
 
 // Change this number to change which level you have completed up until 
 //int level = 3;
@@ -523,20 +527,25 @@ void teacherScreen(tgui::Gui& gui, sf::Packet p)
 	tgui::ListBox::Ptr listBox(gui, "userbox");
 	listBox->load("../TGUI/widgets/Black.conf");
 	listBox->setSize(260, 400);
-	//listBox->setItemHeight(20);
 	listBox->setPosition(270, 50);
-	//listBox->addItem("Item 1");
-	//listBox->addItem("Item 2");
-	//listBox->addItem("Item 3");
 
 	// Create the login button
-	tgui::Button::Ptr button(gui);
-	button->load("../TGUI/widgets/Black.conf");
-	button->setSize(260, 60);
-	button->setPosition(270, 480);
-	button->setText("Delete");
-	button->bindCallback(tgui::Button::LeftMouseClicked);
-	button->setCallbackId(100);
+	tgui::Button::Ptr deleteButton(gui);
+	deleteButton->load("../TGUI/widgets/Black.conf");
+	deleteButton->setSize(260, 60);
+	deleteButton->setPosition(270, 480);
+	deleteButton->setText("Delete");
+	deleteButton->bindCallback(tgui::Button::LeftMouseClicked);
+	deleteButton->setCallbackId(100);
+
+	// Create the HTML button
+	tgui::Button::Ptr htmlButton(gui);
+	htmlButton->load("../TGUI/widgets/Black.conf");
+	htmlButton->setSize(260, 60);
+	htmlButton->setPosition(270, 550);
+	htmlButton->setText("Generate HTML");
+	htmlButton->bindCallback(tgui::Button::LeftMouseClicked);
+	htmlButton->setCallbackId(101);
 
 	sf::Uint32 size;
 	p >> size;
@@ -1092,6 +1101,57 @@ bool level3check(tgui::Gui& gui)
 		return false;
 }
 
+string header(){
+	return "<!DOCTYPE html><html><head>";
+}
+string style(){
+	return "<style>h1{color: blue;font-family: verdana;font-size: 300%;}table, th, td{border: 1px solid black;	border - collapse: collapse;}th, td{padding: 5px;}th{text - align: left;}</style></head>";
+}
+string title(string s){
+	return "<h1><center>" + s + "</center></h1>";
+}
+string bodyTabel(){
+	return "<center><table style=\"width:100 % \"><center><tr><th>Firstname</th><th>Password</th><th>Current Level</th></tr>";
+
+}
+string tableEntry(string name, string password, string level){
+	return "<tr><td>" + name + "</td><td>" + password + "</td><td>" + level + "</td>";
+}
+
+string footer(){
+	return"</body></html>";
+}
+/* This method will turn any integer to a string for printing to the HTML file */
+string intToString(int numToString){
+	std::stringstream sstm;
+	sstm << numToString;
+	return sstm.str();
+}
+
+/**
+*  This method is a helper for formatting the HTML file in the correct fashion.  3 colmums, Username::Password::Level Progress for
+*  each user in the database.  Takes in a packet from the server containing all of the user information from the server and uses
+*  that packet to populate teh table.
+*/
+void makeHtml(sf::Packet pack)
+{
+	ofstream myfile;
+	myfile.open("..\\TeacherReport.html");//Create a .thml file to write to.
+	myfile << header();//Html code made by calling methods to break up the parts to allow easy modifications
+	myfile << style();
+	myfile << "<body>";
+	myfile << title("Class Report");
+	myfile << bodyTabel();//Open te tabel
+	for (int i = 0; i < 999; i++)
+	{
+		/* THIS IS THE LINE TO CHANGE (intToString(i) should be the level information of the user) */
+		myfile << tableEntry("Name", "Password", intToString(i));//TODO Change "Name", "Password", and the input to "intToString()" to the appropriate information for each person in the database
+		/* THIS IS THE LINE TO CHANGE Change the loop limit also to be just however many people are in the databse */
+	}
+	myfile << "</center></table></center>"; //Close the table
+	myfile << footer();
+}
+
 int main()
 {
 	// Create the window
@@ -1480,6 +1540,14 @@ int main()
 
 				temp->removeItem(name);
 
+			}
+			if (callback.id == 101)
+			{
+				//**********TODO input what you need from the server class to get the name, password, and levelInfo to print the HTML file*************
+
+				// PackStruct to keep track of each player.  Get each player's Name, Password, and Level progress to print to HTML file
+				sf::Packet pack; // Packet should contain all of the users to print to the HTML file
+				makeHtml(pack); // makeHtml is a method that formats an HTML file.  It prints a table containing usernames, passwords, and level info
 			}
 
 			if (callback.id == 666)

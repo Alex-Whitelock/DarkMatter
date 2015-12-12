@@ -56,10 +56,10 @@ PackStruct loginCheck(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "SELECT * FROM Users WHERE UserName = '" + p.userName + "' AND Password = '" + p.password + "'";
@@ -73,7 +73,7 @@ PackStruct loginCheck(PackStruct p)
 		p.admin = false;
 		user = p.userName;
 
-		//Grabs all fields from Users table and traverses them
+		// Grabs all fields from Users table and traverses them
 		while ((field = mysql_fetch_field(result)))
 		{
 			std::cout << field->name << ": " << row[i] << std::endl;
@@ -108,7 +108,6 @@ PackStruct loginCheck(PackStruct p)
 
 	mysql_close(connection);
 
-
 	return p;
 }
 
@@ -121,13 +120,13 @@ PackStruct newAccount(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
-	//Check if user exists
+	// Check if user exists
 	std::string command = "SELECT * FROM Users WHERE Username = '" + p.userName + "'";
 
 	mysql_query(connection, command.c_str());
@@ -160,10 +159,10 @@ PackStruct getGameLevel(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 
@@ -175,7 +174,7 @@ PackStruct getGameLevel(PackStruct p)
 	if ((row = mysql_fetch_row(result)))
 	{
 		int i = 0;
-		//Grabs all fields from Users table and traverses them
+		// Grabs all fields from Users table and traverses them
 		while ((field = mysql_fetch_field(result)))
 		{
 			std::string temp = field->name;
@@ -203,10 +202,10 @@ PackStruct advanceLevel1(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "SELECT * FROM Users WHERE Username = '" + p.userName + "'";
@@ -217,7 +216,7 @@ PackStruct advanceLevel1(PackStruct p)
 	if ((row = mysql_fetch_row(result)))
 	{
 		int i = 0;
-		//Grabs all fields from Users table and traverses them
+		// Grabs all fields from Users table and traverses them
 		while ((field = mysql_fetch_field(result)))
 		{
 			std::string temp = field->name;
@@ -253,10 +252,10 @@ PackStruct advanceLevel2(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "SELECT * FROM Users WHERE Username = '" + p.userName + "'";
@@ -267,7 +266,7 @@ PackStruct advanceLevel2(PackStruct p)
 	if ((row = mysql_fetch_row(result)))
 	{
 		int i = 0;
-		//Grabs all fields from Users table and traverses them
+		// Grabs all fields from Users table and traverses them
 		while ((field = mysql_fetch_field(result)))
 		{
 			std::string temp = field->name;
@@ -305,10 +304,10 @@ PackStruct advanceLevel3(PackStruct p)
 	std::string user;
 	int level = 0;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "SELECT * FROM Users WHERE Username = '" + p.userName + "'";
@@ -319,7 +318,7 @@ PackStruct advanceLevel3(PackStruct p)
 	if ((row = mysql_fetch_row(result)))
 	{
 		int i = 0;
-		//Grabs all fields from Users table and traverses them
+		// Grabs all fields from Users table and traverses them
 		while ((field = mysql_fetch_field(result)))
 		{
 			std::string temp = field->name;
@@ -353,10 +352,10 @@ void deleteUser(PackStruct p)
 	MYSQL_FIELD *field;
 	MYSQL *connection, mysql;
 
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "DELETE FROM Users WHERE Username=\"" + p.userName + "\"";
@@ -375,10 +374,10 @@ sf::Packet users()
 	MYSQL_FIELD *field;
 	MYSQL *connection, mysql;
 	
-	//initialize mysql connection
+	// Initialize mysql connection
 	mysql_init(&mysql);
 
-	//connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
 	std::string command = "SELECT `Username` FROM `Users`";
@@ -414,7 +413,7 @@ int main()
 
 	if (listener.listen(5000) != sf::TcpListener::Status::Done)
 		return 1;
-
+	
 	std::cout << "Server is listening to port 5000, waiting for connections..." << std::endl;
 
 	listener.accept(client);
