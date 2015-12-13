@@ -380,7 +380,7 @@ sf::Packet users()
 	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
-	std::string command = "SELECT `Username` FROM `Users`";
+	std::string command = "SELECT * FROM `Users`";
 
 	mysql_query(connection, command.c_str());
 	result = mysql_store_result(connection);
@@ -401,6 +401,70 @@ sf::Packet users()
 	mysql_close(connection);
 
 	return returnPack;
+}
+
+PackStruct html(PackStruct p)
+{
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+	MYSQL *connection, mysql;
+	std::string user;
+	int level = 0;
+
+	// Initialize mysql connection
+	mysql_init(&mysql);
+
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
+
+	std::string command = "SELECT * FROM Users";
+
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+	if ((row = mysql_fetch_row(result)))
+	{
+		int i = 0;
+		bool admin = false;
+		p.admin = false;
+		user = p.userName;
+
+		// Grabs all fields from Users table and traverses them
+		while ((field = mysql_fetch_field(result)))
+		{
+			std::cout << field->name << ": " << row[i] << std::endl;
+			std::string temp = field->name;
+			if (temp.compare("Admin") == 0){
+				std::string admVal = row[i];
+				admin = admVal.compare("1") == 0;
+			}
+			if (temp.compare("GameLevel") == 0){
+				std::string levelVal = row[i];
+				level = atoi(levelVal.c_str());
+				p.level = level;
+				p.authorized = true;
+			}
+			i++;
+		}
+
+		if (admin){
+			std::cout << "User " << p.userName << " is admin" << std::endl;
+			p.admin = true;
+		}
+		else{
+			std::cout << "User " << p.userName << " is not admin" << std::endl;
+		}
+
+		mysql_free_result(result);
+	}
+	else
+	{
+		p.authorized = false;
+	}
+
+	mysql_close(connection);
+
+	return p;
 }
 
 int main()
@@ -485,6 +549,14 @@ int main()
 			{
 				received.clear();
 				received = users();
+				client.send(received);
+			}
+
+			if (packed.connType == "HTMLREPORT")
+			{
+				packed = html(packed);
+				received.clear();
+				received << packed;
 				client.send(received);
 			}
 		}

@@ -1544,7 +1544,21 @@ int main()
 			if (callback.id == 101)
 			{
 				//**********TODO input what you need from the server class to get the name, password, and levelInfo to print the HTML file*************
+				sf::Packet pack;
+				tobeSent.connType = "HTMLREPORT";
+				pack << tobeSent;
 
+				if (socket2.send(pack) == sf::Socket::Done)
+					std::cout << "Successfully sent packet \n" << std::endl;
+
+				pack.clear();
+
+				if (socket2.receive(pack) == sf::Socket::Done)
+				{
+					pack >> tobeSent;
+					//level = tobeSent.level;
+					//levelSelectionScreen(gui, level);
+				}
 				// PackStruct to keep track of each player.  Get each player's Name, Password, and Level progress to print to HTML file
 				sf::Packet pack; // Packet should contain all of the users to print to the HTML file
 				makeHtml(pack); // makeHtml is a method that formats an HTML file.  It prints a table containing usernames, passwords, and level info
