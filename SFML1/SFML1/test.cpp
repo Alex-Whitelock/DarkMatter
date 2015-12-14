@@ -749,17 +749,17 @@ bool level2check(tgui::Gui& gui)
 
 	int count = 0;
 	int callbackID = 22;
-	if (helpCheckLevel(gui, "Femur", 3, progress, callbackID))
+	if (helpCheckLevel(gui, "Femur", 0, progress, callbackID))
 		count++;
-	if (helpCheckLevel(gui, "Cranium", 2, progress, callbackID))
+	if (helpCheckLevel(gui, "Cranium", 1, progress, callbackID))
 		count++;
-	if (helpCheckLevel(gui, "Pelvis", 1, progress, callbackID))
+	if (helpCheckLevel(gui, "Pelvis", 2, progress, callbackID))
 		count++;
-	if (helpCheckLevel(gui, "Humerus", 0, progress, callbackID))
+	if (helpCheckLevel(gui, "Humerus", 3, progress, callbackID))
 		count++;
-	if (helpCheckLevel(gui, "Carpals", 5, progress, callbackID))
+	if (helpCheckLevel(gui, "Carpals", 4, progress, callbackID))
 		count++;
-	if (helpCheckLevel(gui, "Patella", 4, progress, callbackID))
+	if (helpCheckLevel(gui, "Patella", 5, progress, callbackID))
 		count++;
 	if (helpCheckLevel(gui, "Vertebrae", 6, progress, callbackID))
 		count++;
