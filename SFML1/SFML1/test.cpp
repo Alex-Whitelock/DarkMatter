@@ -6,6 +6,9 @@
 #include <SFML\Audio.hpp>
 #include <SFML\Audio\Music.hpp>
 #include <SFML\Network.hpp>
+#include <stdlib.h>
+#include <list>
+#pragma comment(lib, "sfml-network.lib")
 #include <TGUI\TGUI.hpp>
 #include <Box2D\Box2D.h>
 #include <iostream>
@@ -450,13 +453,13 @@ void teacherScreen(tgui::Gui& gui, sf::Packet p)
 	tgui::ListBox::Ptr listBox(gui, "userbox");
 	listBox->load("../TGUI/widgets/Black.conf");
 	listBox->setSize(260, 400);
-	listBox->setPosition(270, 50);
+	listBox->setPosition(270, 40);
 
 	// Create the login button
 	tgui::Button::Ptr deleteButton(gui);
 	deleteButton->load("../TGUI/widgets/Black.conf");
 	deleteButton->setSize(260, 60);
-	deleteButton->setPosition(270, 480);
+	deleteButton->setPosition(270, 455);
 	deleteButton->setText("Delete");
 	deleteButton->bindCallback(tgui::Button::LeftMouseClicked);
 	deleteButton->setCallbackId(100);
@@ -465,7 +468,7 @@ void teacherScreen(tgui::Gui& gui, sf::Packet p)
 	tgui::Button::Ptr htmlButton(gui);
 	htmlButton->load("../TGUI/widgets/Black.conf");
 	htmlButton->setSize(260, 60);
-	htmlButton->setPosition(270, 550);
+	htmlButton->setPosition(270, 530);
 	htmlButton->setText("Generate HTML");
 	htmlButton->bindCallback(tgui::Button::LeftMouseClicked);
 	htmlButton->setCallbackId(101);
@@ -1013,14 +1016,116 @@ string intToString(int numToString){
 	sstm << numToString;
 	return sstm.str();
 }
+/**
+*Helper method to get users from database and put them in tabel for html report
+*/
+std::list<std::string> getUsers(){
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+	MYSQL *connection, mysql;
+
+	// Initialize mysql connection
+	mysql_init(&mysql);
+
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
+
+	std::string command = "SELECT `Username` FROM `Users`";
+
+
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+
+	std::list<std::string> users;
+	while ((row = mysql_fetch_row(result)) != NULL)
+	{
+		users.push_back(row[0]);
+	}
+	mysql_free_result(result);
+	mysql_close(connection);
+
+	return users;
+}
+
+
+/**
+*Helper method to get Passwords from database and put them in tabel for html report
+*/
+std::list<std::string> getPassword(){
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+	MYSQL *connection, mysql;
+
+	// Initialize mysql connection
+	mysql_init(&mysql);
+
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
+
+	std::string command = "SELECT `Password` FROM `Users`";
+
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+
+	std::list<std::string> password;
+	while ((row = mysql_fetch_row(result)) != NULL)
+	{
+		password.push_back(row[0]); //Add the elements to a list that can be returned and itterated over.
+	}
+	mysql_free_result(result);
+	mysql_close(connection);
+
+	return password;
+}
+
+
+
+
+/**
+*Helper method to get level from database and put them in tabel for html report
+*/
+std::list<std::string> getLevel(){
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	MYSQL_FIELD *field;
+	MYSQL *connection, mysql;
+
+	// Initialize mysql connection
+	mysql_init(&mysql);
+
+	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
+	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
+
+	std::string command = "SELECT `GameLevel` FROM `Users`";
+
+
+	mysql_query(connection, command.c_str());
+	result = mysql_store_result(connection);
+
+	std::list<std::string> level;
+	while ((row = mysql_fetch_row(result)) != NULL)
+	{
+		level.push_back(row[0]);
+	}
+	mysql_free_result(result);
+	mysql_close(connection);
+
+	return level;
+}
+
 
 /**
 *  This method is a helper for formatting the HTML file in the correct fashion.  3 colmums, Username::Password::Level Progress for
 *  each user in the database.  Takes in a packet from the server containing all of the user information from the server and uses
-*  that packet to populate teh table.
+*  that packet to populate the table.
 */
 void makeHtml(sf::Packet pack)
 {
+	std::list<std::string> users = getUsers();
+	std::list<std::string> password = getPassword();
+	std::list<std::string> level = getLevel();
 	ofstream myfile;
 	myfile.open("..\\TeacherReport.html");//Create a .thml file to write to.
 	myfile << header();//Html code made by calling methods to break up the parts to allow easy modifications
@@ -1028,11 +1133,17 @@ void makeHtml(sf::Packet pack)
 	myfile << "<body>";
 	myfile << title("Class Report");
 	myfile << bodyTabel();//Open te tabel
-	for (int i = 0; i < 999; i++)
+	int i = 0;
+	
+	std::list<std::string>::const_iterator userIt = users.begin();
+	std::list<std::string>::const_iterator passIt = password.begin();
+	std::list<std::string>::const_iterator levelIt = level.begin();
+	for (; userIt != users.end() && passIt != password.end() && levelIt != level.end(); userIt++, passIt++, levelIt++)
 	{
 		/* THIS IS THE LINE TO CHANGE (intToString(i) should be the level information of the user) */
-		myfile << tableEntry("Name", "Password", intToString(i));//TODO Change "Name", "Password", and the input to "intToString()" to the appropriate information for each person in the database
+		myfile << tableEntry(*userIt, *passIt, *levelIt);//TODO Change "Name", "Password", and the input to "intToString()" to the appropriate information for each person in the database
 		/* THIS IS THE LINE TO CHANGE Change the loop limit also to be just however many people are in the databse */
+		i++;
 	}
 	myfile << "</center></table></center>"; //Close the table
 	myfile << footer();
