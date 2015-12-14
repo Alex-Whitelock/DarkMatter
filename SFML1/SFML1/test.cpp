@@ -16,9 +16,6 @@
 using namespace std;
 
 
-// Change this number to change which level you have completed up until 
-//int level = 3;
-
 // Message that will be displayed on login screen depending on login status
 std::string loginMessage;
 std::string loginMess2;
@@ -28,7 +25,6 @@ static const float SCALE = 30.f;
 
 sf::TcpSocket socket2;
 const unsigned short PORT = 5000;
-//const std::string IPADDRESS("155.98.108.1");
 
 struct PackStruct
 {
@@ -144,73 +140,6 @@ void loginScreen(tgui::Gui& gui)
 	labelStatus2->setPosition(400 - ((messLength2 * 15) / 2), 560);
 	labelStatus2->setText(loginMess2);
 }
-
-//int getGameLevel(MYSQL *connection, std::string user)
-//{
-//	int level = 0;
-//	MYSQL_RES *result;
-//	MYSQL_ROW row;
-//	MYSQL_FIELD *field;
-//
-//	std::string command = "SELECT * FROM Users WHERE UserName = '" + user + "'";
-//	
-//	mysql_query(connection, command.c_str());
-//	result = mysql_store_result(connection);
-//	if ((row = mysql_fetch_row(result)))
-//	{
-//		int i = 0;
-//		//Grabs all fields from Users table and traverses them
-//		while ((field = mysql_fetch_field(result)))
-//		{
-//			std::string temp = field->name;
-//			if (temp.compare("GameLevel") == 0){
-//				std::string levelVal = row[i];
-//				level = atoi(levelVal.c_str());
-//			}
-//			i++;
-//		}
-//	}
-//	return level;
-//}
-
-/*void advanceLevel(int currentLevel, MYSQL *connection, std::string user)
-{
-	std::string str_currentLevel = std::to_string(currentLevel);
-	// Update database, advance game level if applicable (if game level is not already greater than 1)
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
-
-	std::string command = "SELECT * FROM Users WHERE Username = '" + user + "'";
-	mysql_query(connection, command.c_str());
-	result = mysql_store_result(connection);
-
-	if ((row = mysql_fetch_row(result)))
-	{
-		int i = 0;
-		bool gameAdv = false;
-
-		//Grabs all fields from Users table and traverses them
-		while ((field = mysql_fetch_field(result)))
-		{
-			std::string temp = field->name;
-			if (temp.compare("GameLevel") == 0){
-				std::string gameVal = row[i];
-
-				if (gameVal.compare(str_currentLevel) == 0 && gameVal.compare("4") != 0)
-				{
-					currentLevel++;
-					std::string str_newlevel = std::to_string(currentLevel);
-					std::string command = "UPDATE Users SET GameLevel = '" + str_newlevel + "' WHERE Username = '" + user + "'";
-					mysql_query(connection, command.c_str());
-
-					std::cout << "Game level advances to " << currentLevel << std::endl;
-				}
-			}
-			i++;
-		}
-	}
-}*/
 
 void levelSelectionScreen(tgui::Gui& gui, int levelNum)
 {
@@ -402,16 +331,13 @@ void celebration()
 	tgui::Gui childGui(childWindow);
 
 	/** Prepare the world */
-	//b2Vec2 Gravity(0.f, 9.8f); // Earth gravity
 	b2Vec2 Gravity(0.f, 4.8f);
 	b2World World(Gravity);
 	CreateGround(World, 300.f, 600.f);
 
 	/** Prepare audio */
 	sf::Music music;
-	//music.openFromFile("../audio/WooHoo.wav");
 	music.openFromFile("../audio/Applause.wav");
-	//music.openFromFile("../audio/Music_Box.wav");
 
 	music.play();
 
@@ -504,8 +430,6 @@ void lockedScreen(tgui::Gui& gui)
 {	
 	// Prepare audio
 	sf::Music music;
-	//if (!music.openFromFile("../audio/Sad_Trombone.wav")) {
-	//if (!music.openFromFile("../audio/Croud Boo 3.wav")) {
 	if (!music.openFromFile("../audio/Cartoon Hop.wav")) {
 		std::cout << "Sad Music NOT Loaded" << std::endl;
 	}
@@ -513,7 +437,6 @@ void lockedScreen(tgui::Gui& gui)
 		std::cout << "Sad Music Loaded" << std::endl;
 	}
 	music.play();
-	//levelSelectionScreen(gui, level);
 }
 
 void teacherScreen(tgui::Gui& gui, sf::Packet p)
@@ -555,43 +478,7 @@ void teacherScreen(tgui::Gui& gui, sf::Packet p)
 		p >> user;
 		listBox->addItem(user);
 	}
-
-
-	//MYSQL_RES *result;
-	//MYSQL_ROW row;
-	//MYSQL_FIELD *field;
-
-	//std::cout << users << std::endl;
-
-	//std::string command = "SELECT * FROM Users";
-	//std::string command = "SELECT `Username` FROM `Users`";
-	//mysql_query(connection, command.c_str());
-	//result = mysql_store_result(connection);
-	//field = mysql_fetch_field(result);
-
-/*	while ((row = mysql_fetch_row(result)) != NULL)
-	{
-		std::string username = row[0];
-		std::cout << username << std::endl;
-		listBox->addItem(username);
-	}*/
 }
-
-/*void deleteUser(tgui::Gui& gui, MYSQL *connection)
-{
-	tgui::ListBox::Ptr temp = gui.get("userbox");
-	std::string name = temp->getSelectedItem();
-
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	MYSQL_FIELD *field;
-
-	std::string command = "DELETE FROM Users WHERE Username=\"" + name + "\"";
-	mysql_query(connection, command.c_str());
-	result = mysql_store_result(connection);
-
-	temp->removeItem(name);
-}*/
 
 /*
 *  Helper Method for making the "Combos" AKA "pull-down" menu selectors.  This method will create the combo and
@@ -987,7 +874,6 @@ void level3(tgui::Gui& gui)
 	lysosomeTab->add("endoplasmic reticulum");
 }
 
-//void level3check(tgui::Gui& gui)
 bool level3check(tgui::Gui& gui)
 {
 	tgui::LoadingBar::Ptr progress = gui.get("cellProgress");
@@ -1163,7 +1049,7 @@ int main()
 
 	// Establish connection to the SFML server
 
-	sf::IpAddress Address1 = "lab6-8";/*sf::IpAddress::getLocalAddress();*/
+	sf::IpAddress Address1 = sf::IpAddress::getLocalAddress();
 
 	if (socket2.connect(Address1, PORT) == sf::Socket::Done)
 	{
@@ -1219,8 +1105,7 @@ int main()
 				sf::Packet pack;
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1230,12 +1115,10 @@ int main()
 
 					if (tobeSent.authorized == true)
 					{
-						std::cout << "Your user level is" << std::endl;
 						user = tobeSent.userName;
 						loginMessage.clear();
 						loginMess2.clear();
 						loginMessage = "Logged in successfully!";
-						std::cout << loginMessage << std::endl;
 
 						if (tobeSent.admin == true)
 						{
@@ -1246,8 +1129,7 @@ int main()
 							sf::Packet pack;
 							pack << tobeSent;
 
-							if (socket2.send(pack) == sf::Socket::Done)
-								std::cout << "Successfully sent packet \n" << std::endl;
+							socket2.send(pack);
 
 							pack.clear();
 							if (socket2.receive(pack) == sf::Socket::Done)
@@ -1296,8 +1178,7 @@ int main()
 					sf::Packet pack;
 					pack << tobeSent;
 
-					if (socket2.send(pack) == sf::Socket::Done)
-						std::cout << "Successfully sent packet \n" << std::endl;
+					socket2.send(pack);
 
 					pack.clear();
 
@@ -1336,7 +1217,6 @@ int main()
 
 			if (callback.id == 3)
 			{
-				std::cout << "Loading Level 1" << std::endl;
 				window.clear();
 				gui.removeAllWidgets();
 				level1(gui);
@@ -1345,7 +1225,6 @@ int main()
 			if (callback.id == 4)
 			{
 				// Load the bone level
-				std::cout << "Loading Level 2" << std::endl;
 				window.clear();
 				gui.removeAllWidgets();
 				level2(gui);
@@ -1353,7 +1232,6 @@ int main()
 
 			if (callback.id == 5)
 			{
-				std::cout << "Loading Level 3" << std::endl;
 				window.clear();
 				gui.removeAllWidgets();
 				level3(gui);
@@ -1382,8 +1260,7 @@ int main()
 				tobeSent.connType = "GAMELEVEL";
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1403,8 +1280,7 @@ int main()
 					tobeSent.connType = "ADVANCELEVEL1";
 					pack << tobeSent;
 
-					if (socket2.send(pack) == sf::Socket::Done)
-						std::cout << "Successfully sent packet \n" << std::endl;
+					socket2.send(pack);
 
 					pack.clear();
 
@@ -1423,8 +1299,7 @@ int main()
 				tobeSent.connType = "GAMELEVEL";
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1445,8 +1320,7 @@ int main()
 					tobeSent.connType = "ADVANCELEVEL2";
 					pack << tobeSent;
 
-					if (socket2.send(pack) == sf::Socket::Done)
-						std::cout << "Successfully sent packet \n" << std::endl;
+					socket2.send(pack);
 
 					pack.clear();
 
@@ -1465,8 +1339,7 @@ int main()
 				tobeSent.connType = "GAMELEVEL";
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1486,8 +1359,7 @@ int main()
 					tobeSent.connType = "ADVANCELEVEL3";
 					pack << tobeSent;
 
-					if (socket2.send(pack) == sf::Socket::Done)
-						std::cout << "Successfully sent packet \n" << std::endl;
+					socket2.send(pack);
 
 					pack.clear();
 
@@ -1506,8 +1378,7 @@ int main()
 				tobeSent.connType = "GAMELEVEL";
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1533,8 +1404,7 @@ int main()
 				
 				pack << deleteStruct;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1548,8 +1418,7 @@ int main()
 				tobeSent.connType = "HTMLREPORT";
 				pack << tobeSent;
 
-				if (socket2.send(pack) == sf::Socket::Done)
-					std::cout << "Successfully sent packet \n" << std::endl;
+				socket2.send(pack);
 
 				pack.clear();
 
@@ -1560,7 +1429,7 @@ int main()
 					//levelSelectionScreen(gui, level);
 				}
 				// PackStruct to keep track of each player.  Get each player's Name, Password, and Level progress to print to HTML file
-				sf::Packet pack; // Packet should contain all of the users to print to the HTML file
+//				sf::Packet pack; // Packet should contain all of the users to print to the HTML file
 				makeHtml(pack); // makeHtml is a method that formats an HTML file.  It prints a table containing usernames, passwords, and level info
 			}
 

@@ -7,11 +7,7 @@
 #include <list>
 
 
-//sf::TcpSocket socket;
-sf::Mutex globalMutex;
-std::string msgSend;
 bool quit = false;
-
 
 struct PackStruct
 {
@@ -23,19 +19,6 @@ struct PackStruct
 	bool alreadyExist;
 	int level;
 };
-
-//void GetInput(void)
-//{
-//	std::string s;
-//	std::cout << "\nEnter \"exit\" to quit or message to send: ";
-//	std::cin >> s;
-//	if (s == "exit")
-//		quit = true;
-//	globalMutex.lock();
-//	msgSend = s;
-//	globalMutex.unlock();
-//}
-
 
 sf::Packet& operator >>(sf::Packet& Packet, PackStruct& P)
 {
@@ -293,8 +276,6 @@ PackStruct advanceLevel2(PackStruct p)
 	return p;
 }
 
-
-
 PackStruct advanceLevel3(PackStruct p)
 {
 	MYSQL_RES *result;
@@ -380,7 +361,8 @@ sf::Packet users()
 	// Connect params: connection, domain, username, password, dbName, port, socket, clientFlag
 	connection = mysql_real_connect(&mysql, "db4free.net", "darkmatter", "darkmatter", "biofun", 3306, 0, 0);
 
-	std::string command = "SELECT * FROM `Users`";
+	std::string command = "SELECT `Username` FROM `Users`";
+
 
 	mysql_query(connection, command.c_str());
 	result = mysql_store_result(connection);
